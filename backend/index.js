@@ -28,8 +28,10 @@ app.use(
 
 
 import userRoutes from './routes/userRoutes.js';
+import recruiterRoutes from './routes/recruiterRoutes.js';
 import connectDb from './database/db.js';
 app.use('/api/user',userRoutes);
+app.use('/api/recruiter',recruiterRoutes);
 
 
 app.listen(port,()=>{
