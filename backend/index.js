@@ -4,9 +4,22 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import passport from './controllers/passport.js';
 import session from 'express-session';
+import cloudinary from 'cloudinary';
 dotenv.config();
 const app=express();
 const port=process.env.PORT;
+
+
+if (!process.env.Cloud_Name || !process.env.Cloud_Api || !process.env.Cloud_Secret || !process.env.PORT) {
+  console.error(" Missing required environment variables. Check your .env file.");
+  process.exit(1);
+}
+
+cloudinary.v2.config({
+  cloud_name: process.env.Cloud_Name,
+  api_key: process.env.Cloud_Api,
+  api_secret: process.env.Cloud_Secret,
+});
 
 app.use(cookieParser());
 app.use(express.json());
