@@ -11,6 +11,7 @@ import {
 const router = express.Router();
 
 router.post("/create", isAuth, createJobPost);
+
 router.get("/getJob",isAuth, getJobPosts);
 router.get("/getJob/:id",isAuth, getJobPostById);
 router.put("/updateJob/:id", isAuth, updateJobPost);
