@@ -7,7 +7,8 @@ import {
   getJobApplications,
   getJobApplicationById,
   updateApplicationStatus,
-  deleteApplication
+  deleteApplication,
+  getApplicationsByStatus
 } from "../controllers/applicationControllers.js";
 import { isAuth } from "../middlewares/isAuth.js";
 
@@ -21,5 +22,6 @@ router.delete("/deleteapplications/:id", isAuth, deleteApplication);
 router.get("/jobapplicants/:jobId/", isAuth, getJobApplications);
 router.get("/jobapplicantsId/:id", isAuth, getJobApplicationById);
 router.patch("/status/:id", isAuth, updateApplicationStatus);
+router.get("/getStatus/:status",isAuth,getApplicationsByStatus)
 
 export default router;

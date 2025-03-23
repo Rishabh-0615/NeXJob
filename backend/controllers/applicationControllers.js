@@ -193,16 +193,30 @@ export const deleteApplication = TryCatch(async (req, res) => {
 
 export const getApplicationsByStatus = TryCatch(async (req, res) => {
     const { status } = req.params;
-    const userId = req.user._id;
-    
-    const applications = await Application.find({ applicant: userId, status })
-        .populate("job", "title description company")
-        .populate("applicant", "name email")
-        .sort({ appliedAt: -1 });
-    
-    if (!applications.length) {
-        return res.status(404).json({ message: "No applications found with this status" });
+    const recruiterId = req.user._id;
+
+    const recruiter = await JobRecruiter.findById(recruiterId);
+    if (!recruiter) {
+        return res.status(404).json({ message: "Recruiter not found" });
     }
-    
+    const jobs = await JobPost.find({ company: recruiterId }).select("_id");
+    if (!jobs.length) {
+        return res.status(404).json({ message: "No jobs found for this recruiter" });
+    }
+    const jobIds = jobs.map(job => job._id);
+
+    const applications = await Application.find({ job: { $in: jobIds }, status })
+        .populate({
+            path: "job",
+            select: "title description company",
+            populate: { path: "company", select: "companyName companyLogo" }
+        })
+        .populate("applicant", "name email phone")
+        .sort({ appliedAt: -1 });
+
+    if (!applications.length) {
+        return res.status(404).json({ message: "No applications found with this status for your jobs" });
+    }
+
     res.status(200).json(applications);
-    });
+});
