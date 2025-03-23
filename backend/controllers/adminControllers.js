@@ -72,7 +72,7 @@ export const getUnverifiedRecruiters= TryCatch(async (req, res) => {
 
     if (unverifiedRecruiters.length === 0) {
       console.log("No unverified Recruiters found.");
-      return res.status(200).json({ farmers: [] });
+      return res.status(200).json({ Recruiters: [] });
     }
 
     console.log("Unverified Recruiters:", unverifiedRecruiters);
@@ -84,7 +84,27 @@ export const getUnverifiedRecruiters= TryCatch(async (req, res) => {
   }
 });
 
-
+const sendVerificationEmail = async (recruiterEmail, recruiterName) => {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: recruiterEmail,
+      subject: 'Your Account Has Been Verified!',
+      html: `
+        <h2>Dear ${recruiterName},</h2>
+        <p>We are pleased to inform you that your account has been verified by the admin.</p>
+        <p>You can now start posting jobs and managing your recruitment activities.</p>
+        <br>
+        <p>Best Regards,</p>
+        <p><strong>Job Portal Team</strong></p>
+      `,
+    };
+    await transporter.sendMail(mailOptions);
+    console.log(`Verification email sent to ${recruiterEmail}`);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};  
 
 
 
@@ -103,14 +123,10 @@ export const verifyRecruiter = TryCatch(async (req, res) => {
         }
     recruiter.isVerifiedByAdmin = true;
     await recruiter.save();
-    res.status(200).json({ message: "Recruiter verified successfully" });
+    await sendVerificationEmail(recruiter.recruiterEmail,recruiter.recruiterName)
+    res.status(200).json({ message: "Recruiter verified successfully and email sent" });
   } catch (error) {
     console.error("Verification error:", error);
     res.status(500).json({ message: "Server error", error });
   }
 });
-
-
-
-
-

@@ -7,6 +7,8 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import validator from 'validator';
+import { basicprofile } from "./seekerControllers.js";
+import { seekerProfile } from "../models/seekerprofileModel.js";
 dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED="0";
 const TEMP_USERS={}
@@ -114,6 +116,12 @@ export const registerWithOtp = TryCatch(async (req, res) => {
       delete TEMP_USERS[email]; 
  
       generateToken(user, res);
+
+      await seekerProfile.create({
+        name:user._id,
+        mobile:user.mobile,
+        email:user.email
+      })
   
       res.status(201).json({
         user,
