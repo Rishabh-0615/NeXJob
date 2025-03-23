@@ -1,4 +1,4 @@
-import { JobRecruiter } from "../models/jobRecruiterModel.js";
+import { JobRecruiter } from "../models/jobrecruiterModel.js";
 import TryCatch from "../utils/TryCatch.js";
 import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
@@ -52,6 +52,7 @@ export const registerRecruiterWithOtp = TryCatch(async (req, res) => {
   }
 
   const otp = crypto.randomInt(100000, 999999);
+  console.log("OTP:", otp);
   TEMP_RECRUITERS[email] = {
     companyName,
     password,
@@ -136,6 +137,9 @@ export const verifyOtpAndRegisterRecruiter = TryCatch(async (req, res) => {
 export const loginRecruiter = TryCatch(async (req, res) => {
   const { email, password } = req.body;
   const recruiter = await JobRecruiter.findOne({ email });
+  if(recruiter && recruiter.isVerifiedByAdmin === false) {
+    return res.status(403).json({ message: "Your account is not verified by the admin." });
+  }
 
   if (!recruiter || !(await bcrypt.compare(password, recruiter.password))) {
     return res.status(400).json({ message: "Email or Password Incorrect." });
