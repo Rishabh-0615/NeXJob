@@ -44,11 +44,13 @@ import userRoutes from './routes/userRoutes.js';
 import recruiterRoutes from './routes/recruiterRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import jopPostRoutes from './routes/jobPostRoutes.js';
+import applicationRoutes from './routes/applicationRoutes.js';
 import connectDb from './database/db.js';
 app.use('/api/user',userRoutes);
 app.use('/api/recruiter',recruiterRoutes);
 app.use('/api/admin',adminRoutes);
 app.use('/api/jobPost',jopPostRoutes);
+app.use('/api/application',applicationRoutes);
 
 
 app.listen(port,()=>{
