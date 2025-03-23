@@ -30,8 +30,13 @@ const schema = new mongoose.Schema(
       id: { type: String },
       url: { type: String },
     },
+    isVerifiedByAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
 
-export const JobRecruiter = mongoose.model("JobRecruiter", schema);
+export const JobRecruiter =
+  mongoose.models.JobRecruiter || mongoose.model("JobRecruiter", schema);
