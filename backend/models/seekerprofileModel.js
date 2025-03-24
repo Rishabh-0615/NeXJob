@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    name:{type:mongoose.Schema.Types.ObjectId,ref:"User",require:true},
-    mobile:{type:mongoose.Schema.Types.ObjectId,ref:"User",require:true},
-    email:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true},
+  name:{type:String,required:true},
+  mobile:{type:Number},
+  email:{type:String,required:true,unique:true},
     skills: [{ type: String }],
     experienceLevel: { type: String, enum: ["Fresher", "Junior", "Mid-level", "Senior", "Expert"] },
     education: [
@@ -31,4 +31,4 @@ const schema = new mongoose.Schema({
 {timestamps:true}
 )
 
-export const seekerProfile = mongoose.model("seekerProfile",schema);
+export const SeekerProfile = mongoose.model("SeekerProfile",schema);

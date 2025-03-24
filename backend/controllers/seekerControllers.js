@@ -1,9 +1,9 @@
-import TryCatch from "../utils/TryCatch";
-import { seekerProfile } from "../models/seekerprofileModel";
+import TryCatch from "../utils/TryCatch.js";
+import { SeekerProfile } from "../models/seekerprofileModel.js";
 
 export const updateProfile = TryCatch(async(req,res)=>{
     const {userId,skills,experienceLevel,education,portfolioURL,experience} = req.body;
-    const profile  = await seekerProfile.findOne({name:userId});
+    const profile  = await SeekerProfile.findOne({name:userId});
     if(!profile)
         return res.status(404).json({success:false,message:"Profile not found. Complete your profile first"});
 
