@@ -1,31 +1,5 @@
 import TryCatch from "../utils/TryCatch";
 import { seekerProfile } from "../models/seekerprofileModel";
-import { User } from "../models/jobseekerModel";
-
-
-export const completeProfile = TryCatch(async(req,res)=>{
-    const {userId, skills, experienceLevel, education, portfolioURL, experience } = req.body;
-
-    const user = await User.findById(userId);
-    if(!user)
-        return res.status(400).json({success:false,message:"User Not found"})
-    
-    const existingProfile = await seekerProfile.findOne({email:user.email});
-    if(existingProfile)
-        return res.status(400).json({success:false,message:"Profile already exists. Use Update Profile instead "});
-
-    const profile = await seekerProfile.create({
-        name:user._id,
-        mobile:user.mobile,
-        email:user.email,
-        skills,
-        experienceLevel,
-        education,
-        portfolioURL,
-        experience
-    });
-    res.status(201).json({success:true,message:"Profile completed Successfully!",profile})
-});
 
 export const updateProfile = TryCatch(async(req,res)=>{
     const {userId,skills,experienceLevel,education,portfolioURL,experience} = req.body;

@@ -26,8 +26,6 @@ router.get("/auth/google",
       res.redirect(process.env.CLIENT_URL);
     }
   );
-
-  router.put('/profile/complete',isAuth,completeProfile);
   router.put('/profile/update',isAuth,updateProfile);
 
 

@@ -13,9 +13,9 @@ const jobPostSchema = new mongoose.Schema(
       minExperience: { type: Number, min: 0 },
       maxExperience: { type: Number },
       education: [{ 
-        degree: { type: String, required: true },
-        field: { type: String },
-        minPercentage: { type: Number, min: 0, max: 100 }
+        degree: { type: [String], required: true },
+        field: { type: [String] },
+        minPercentage: { type: [Number], min: 0, max: 100 }
       }]
     },
 
