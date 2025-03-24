@@ -1,21 +1,29 @@
-import React from 'react'
-import JobseekerLogin from './pages/JobseekerLogin';
-import JobseekerRegister from './pages/JobseekerRegister';
-import JobseekerProfile from './pages/JobseekerProfile';  
-import JobRecruiterRegister from './pages/JobRecruiterRegister';
-import JobRecruiterLogin from './pages/JobRecruiterLogin';
-import JobPosting from './pages/JobPosting';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Loading } from "./components/Loading";
+import { UserData } from "./context/UserContext";
+import HomeSeeker from "./pages/HomeSeeker";
+import JobseekerRegister from "./pages/JobseekerRegister";
+import Verify from "./pages/Verify"
+
 const App = () => {
+  const { loading, isAuth, user } = UserData(); 
+
   return (
     <>
-      <JobseekerRegister />
-      <JobseekerLogin />
-      <JobRecruiterRegister />
-      <JobRecruiterLogin />
-      <JobseekerProfile />
-      <JobPosting />
+      {loading ? (
+        <Loading />
+      ) : (
+        <BrowserRouter>
+          {/* {isAuth && <Navbar user={user} />} */}
+          <Routes>
+            <Route path="/" element={<HomeSeeker />} />
+            <Route path="/register-seeker" element={<JobseekerRegister />} />
+            <Route path="/verify/:token" element={<Verify />} />
+          </Routes>
+        </BrowserRouter>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
