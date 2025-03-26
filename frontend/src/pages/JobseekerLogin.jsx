@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, AlertCircle, LogIn, ChevronRight } from 'lucide-react';
+import { UserData } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const JobseekerLogin = () => {
   const [email, setEmail] = useState('');
@@ -7,24 +9,22 @@ const JobseekerLogin = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+const { loginUser, btnLoading } = UserData();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-    
-    // Simulate API call
+    setError(null); // Clear previous errors
+
+    if (!email || !password) {
+      setError("All fields are required.");
+      return;
+    }
+
     try {
-      // Replace with actual login API call
-      console.log('Logging in with:', { email, password });
-      setTimeout(() => {
-        setLoading(false);
-        // Redirect on success
-        console.log('Login successful');
-      }, 1500);
+      await loginUser( email, password, navigate);
     } catch (err) {
-      setLoading(false);
-      setError('Invalid credentials. Please try again.');
-      console.error('Login error:', err);
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
     }
   };
 
@@ -116,7 +116,7 @@ const JobseekerLogin = () => {
               </label>
             </div>
             <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+              <a href="/forgot" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
                 Forgot password?
               </a>
             </div>

@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
       toast.success(data.message);
       setUser(data.user);
       setIsAuth(true);
-      navigate("/jobseeker");
+      navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
@@ -66,9 +66,9 @@ export const UserProvider = ({ children }) => {
   async function forgotUser(email, navigate) {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/user/forget", { email });
+      const { data } = await axios.post("/api/user/forgot", { email });
       toast.success(data.message);
-      navigate(`/reset-password/${data.token}`);
+      navigate(`/reset/${data.token}`);
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Password reset request failed"
@@ -81,12 +81,12 @@ export const UserProvider = ({ children }) => {
   async function resetUser(token, otp, password, navigate) {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post(`/api/user/reset-password/${token}`, {
+      const { data } = await axios.post(`/api/user/reset/${token}`, {
         otp,
         password,
       });
       toast.success(data.message);
-      navigate("/login");
+      navigate("/login-seeker");
     } catch (error) {
       toast.error(error.response?.data?.message || "Password reset failed");
     } finally {

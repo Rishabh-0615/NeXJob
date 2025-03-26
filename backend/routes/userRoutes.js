@@ -8,8 +8,8 @@ const router = express.Router();
 router.post('/register',registerWithOtp);
 router.post('/verify/:token',verifyOtpAndRegister);
 router.post('/login',loginUser);
-router.post('/forgotpassword',forgetPassword);
-router.post('/resetpassword/:token',resetPassword)
+router.post('/forgot',forgetPassword);
+router.post('/reset/:token',resetPassword)
 router.get('/me',isAuth,myProfile);
 router.get('/user/:id',isAuth,userProfile);
 router.get('/logout',isAuth,logoutUser);
