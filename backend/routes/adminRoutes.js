@@ -6,8 +6,9 @@ import { adminLogin, getUnverifiedRecruiters, meadmin, verifyRecruiter } from '.
 const router = express.Router();
 
 router.post("/admin-login", adminLogin);
-router.get("/getUnverifiedRecruiters", isAuth,getUnverifiedRecruiters);
 router.get("/meadmin", isAuth, meadmin);
+router.get("/getUnverifiedRecruiters", isAuth,getUnverifiedRecruiters);
+
 router.put("/verify-recruiter/:userId",isAuth, verifyRecruiter);
 
 

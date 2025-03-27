@@ -21,7 +21,21 @@ export const UserProvider = ({ children }) => {
       toast.success(data.message);
       setUser(data.user);
       setIsAuth(true);
-      navigate("/");
+      navigate("/homeseeker");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  }
+  async function loginRecruiter(email, password, navigate) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post("/api/recruiter/login", { email, password });
+      toast.success(data.message);
+      setUser(data.user);
+      setIsAuth(true);
+      navigate("/homerecruiter");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
@@ -45,12 +59,30 @@ export const UserProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
+  async function registerRecruiter(formdata,navigate) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post("/api/recruiter/register", {
+      
+        formdata
+      });
+      toast.success(data.message);
+      navigate(`/verify/${data.token}`);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  }
+
+
+
 
   async function verify(token, otp, navigate) {
     setBtnLoading(true);
     try {
       const { data } = await axios.post("/api/user/verify/" + token, {
-        otp
+        otp,
       });
       toast.success(data.message);
       setUser(data.user);
@@ -77,6 +109,37 @@ export const UserProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
+  async function verifyRecruiter(token, otp, navigate) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post("/api/recruiter/verify/" + token, {
+        otp,
+      });
+      toast.success(data.message);
+      setUser(data.user);
+      setIsAuth(true);
+      setBtnLoading(false);
+      navigate("/");
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+      setBtnLoading(false);
+    }
+  }
+
+  async function forgotRecruiter(email, navigate) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post("/api/recruiter/forgot", { email });
+      toast.success(data.message);
+      navigate(`/resetRecruiter/${data.token}`);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Password reset request failed"
+      );
+    } finally {
+      setBtnLoading(false);
+    }
+  }
 
   async function resetUser(token, otp, password, navigate) {
     setBtnLoading(true);
@@ -93,10 +156,36 @@ export const UserProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
+  async function resetRecruiter(token, otp, password, navigate) {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(`/api/recruiter/reset/${token}`, {
+        otp,
+        password,
+      });
+      toast.success(data.message);
+      navigate("/login-recruiter");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Password reset failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  }
 
   async function fetchUser() {
     try {
       const { data } = await axios.get("/api/user/me");
+      setUser(data);
+      setIsAuth(true);
+    } catch (error) {
+      console.log("User fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  async function fetchRecruiter() {
+    try {
+      const { data } = await axios.get("/api/recruiter/me");
       setUser(data);
       setIsAuth(true);
     } catch (error) {
@@ -138,15 +227,19 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     fetchUser();
     fetchAdmin();
+    fetchRecruiter();
   }, []);
 
   return (
     <UserContext.Provider
       value={{
         loginUser,
+        loginRecruiter,
         loginAdmin,
         registerUser,
         forgotUser,
+        forgotRecruiter,
+        resetRecruiter,
         resetUser,
         btnLoading,
         isAuth,
@@ -158,6 +251,9 @@ export const UserProvider = ({ children }) => {
         setAdmin,
         isAuthAdmin,
         verify,
+        verifyRecruiter,
+        registerRecruiter
+      
       }}
     >
       {children}
