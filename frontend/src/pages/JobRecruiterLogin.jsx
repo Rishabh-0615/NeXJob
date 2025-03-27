@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
 import { Mail, Lock, AlertCircle, LogIn, ChevronRight } from 'lucide-react';
+import { UserData } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const JobRecruiterLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const {loginRecruiter} = UserData();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+    loginRecruiter(email,password,navigate)
+
     
     // Simulate API call
     try {
-      // Replace with actual login API call
-      console.log('Recruiter logging in with:', { email, password });
+      
       setTimeout(() => {
         setLoading(false);
         // Redirect on success
@@ -116,7 +121,7 @@ const JobRecruiterLogin = () => {
               </label>
             </div>
             <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+              <a href="/forgot-recruiter" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
                 Forgot password?
               </a>
             </div>

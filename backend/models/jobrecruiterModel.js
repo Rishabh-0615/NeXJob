@@ -6,37 +6,16 @@ const schema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
     website: { type: String },
-    industry: {
-      type: String,
-      required: true,
-      enum: [
-        "Technology & IT",
-        "Finance & Banking",
-        "Healthcare & Pharmaceuticals",
-        "Education & Training",
-        "Manufacturing & Engineering",
-        "Retail & E-commerce",
-        "Marketing & Advertising",
-        "Construction & Real Estate",
-        "Logistics & Transportation",
-        "Hospitality & Tourism",
-        "Government & Public Sector",
-        "Legal & Consulting",
-      ],
-    },
+    industry: { type: String, required: true },
     location: { type: String, required: true },
     password: { type: String, required: true },
     companyLogo: {
       id: { type: String },
       url: { type: String },
     },
-    isVerifiedByAdmin: {
-      type: Boolean,
-      default: false,
-    },
+    isVerifiedByAdmin: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-export const JobRecruiter =
-  mongoose.models.JobRecruiter || mongoose.model("JobRecruiter", schema);
+export const JobRecruiter = mongoose.models.JobRecruiter || mongoose.model("JobRecruiter", schema);

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Building, Phone, Globe, MapPin, Briefcase, User, Upload, AlertCircle, ChevronRight } from 'lucide-react';
+import { UserData } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Make sure to install axios
 
 const JobRecruiterRegister = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +18,8 @@ const JobRecruiterRegister = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const {registerRecruiter} = UserData();
+  const navigate = useNavigate();
 
   const industries = [
     "Technology & IT",
@@ -61,21 +66,40 @@ const JobRecruiterRegister = () => {
     
     setLoading(true);
     
-    // Simulate API call
+    // Prepare form data for API submission
+    const registrationData = new FormData();
+    registrationData.append('companyName', formData.companyName);
+    registrationData.append('email', formData.email);
+    registrationData.append('password', formData.password);
+    registrationData.append('phone', formData.phone);
+    registrationData.append('website', formData.website || '');
+    registrationData.append('industry', formData.industry);
+    registrationData.append('location', formData.location);
+    
+    // Append company logo if provided
+    if (formData.companyLogo) {
+      registrationData.append('companyLogo', formData.companyLogo);
+    }
+    
     try {
-      // Replace with actual registration API call
-      console.log('Registering recruiter with:', formData);
-      setTimeout(() => {
-        setLoading(false);
-        // Redirect on success
-        console.log('Registration successful');
-      }, 1500);
+      const response = await axios.post('/api/recruiter/register', registrationData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+
     } catch (err) {
       setLoading(false);
-      setError('Registration failed. Please try again.');
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Registration failed. Please try again.');
+      }
       console.error('Registration error:', err);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
