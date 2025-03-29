@@ -1,18 +1,40 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-const StatusUpdateModal = ({ applicationId, currentStatus, onUpdate, onClose }) => {
+const StatusUpdateModal = ({ applicationId, currentStatus, onClose, onStatusChange }) => {
   const [status, setStatus] = useState(currentStatus);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleUpdate = async () => {
     if (status === currentStatus) {
       onClose();
       return;
     }
-    
+
     setLoading(true);
+    setError(null);
+
     try {
-      await onUpdate(applicationId,status);
+      console.log(`Updating application ${applicationId} to status: ${status}`);
+
+      const response = await axios.patch(
+        `/api/application/status/${applicationId}`, 
+        { status },
+        { withCredentials: true } // Ensures authentication
+      );
+
+      console.log("Update Response:", response.data);
+
+      if (response.data?.message === "Application status updated successfully") {
+        onStatusChange(status); // Update UI
+        onClose();
+      } else {
+        setError("Failed to update application status.");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      setError(err.response?.data?.message || "Failed to update application status.");
     } finally {
       setLoading(false);
     }
@@ -23,20 +45,15 @@ const StatusUpdateModal = ({ applicationId, currentStatus, onUpdate, onClose }) 
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-bold text-gray-800">Update Application Status</h3>
-          <button 
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
-        
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Application Status
-          </label>
+
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Application Status</label>
           <select 
             value={status} 
             onChange={(e) => setStatus(e.target.value)} 
@@ -50,22 +67,18 @@ const StatusUpdateModal = ({ applicationId, currentStatus, onUpdate, onClose }) 
             <option value="Rejected">Rejected</option>
           </select>
         </div>
-        
+
+        {error && <p className="text-red-500 text-sm">{error}</p>} {/* Error message */}
+
         <div className="flex justify-end space-x-2">
-          <button 
-            onClick={onClose}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 rounded"
-            disabled={loading}
-          >
+          <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:text-gray-800 rounded" disabled={loading}>
             Cancel
           </button>
           <button 
             onClick={handleUpdate} 
             disabled={loading || status === currentStatus} 
             className={`px-4 py-2 text-white rounded ${
-              status === currentStatus
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
+              status === currentStatus ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
             {loading ? (

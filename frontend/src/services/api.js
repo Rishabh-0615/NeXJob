@@ -18,6 +18,12 @@ export const getJobApplicationById = async (id) => {
 };
 
 export const updateApplicationStatus = async (id, status) => {
-  const res = await API.patch(`/status/${id}`, { status });
-  return res.data;
+  try {
+    const res = await API.patch(`/status/${id}`, { status });
+    return res.data;
+  } catch (error) {
+    console.error("API Error updating status:", error);
+    throw error;
+  }
 };
+
