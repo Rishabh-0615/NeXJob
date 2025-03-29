@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import { UserData } from "../context/UserContext";
 
 const Navbar = () => {
-  const {setIsAuth,setUser,isAuth,isAuthRecruiter} =UserData()
+  const {setIsAuth,setUser,isAuth,setIsAuthRecruiter} =UserData()
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
@@ -15,6 +15,7 @@ const Navbar = () => {
       toast.success(data.message);
       setUser([]);
       setIsAuth(false);
+      setIsAuthRecruiter(false);
       navigate("/");
     } catch (error) {
       const errorMessage = error.response

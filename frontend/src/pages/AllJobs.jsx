@@ -80,6 +80,7 @@ const AllJobsContent = () => {
 
     fetchJobPosts();
   }, []);
+   console.log(jobPosts.company)
 
   // Safe filtering function with added filter type handling
   const filteredJobs = React.useMemo(() => {
@@ -164,7 +165,8 @@ const AllJobsContent = () => {
                 </h3>
                 <div className="flex items-center text-neutral-400 text-sm mb-3">
                   {jobPost.company && (
-                    <span className="mr-3">{String(jobPost.company)}</span>
+
+                    <span className="mr-3">{String(jobPost.company.companyName)}</span>
                   )}
                   {jobPost.location && jobPost.location.city && (
                     <span className="flex items-center">

@@ -38,7 +38,7 @@ export const createJobPost = TryCatch(async (req, res) => {
 });
 
 export const getJobPosts = TryCatch(async (req, res) => {
-    const jobPosts = await JobPost.find({ status: "Published" }).populate("company", "companyName").populate("company","companyLogo").populate("createdBy", "companyName").sort({ createdAt: -1 });
+    const jobPosts = await JobPost.find({ status: "Published" }).populate("company", "companyName").populate("createdBy", "companyName").sort({ createdAt: -1 });
     if (!jobPosts || jobPosts.length === 0) {
         return res.status(404).json({ message: "No job posts found" });
     }
