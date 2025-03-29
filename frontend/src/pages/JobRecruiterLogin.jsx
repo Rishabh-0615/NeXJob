@@ -156,7 +156,7 @@ const JobRecruiterLogin = () => {
           <div className="pt-4 text-center">
             <p className="text-sm text-neutral-400">
               Don't have a recruiter account?{' '}
-              <a href="/recruiter/register" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+              <a href="/register-recruiter" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
                 Register now
               </a>
             </p>

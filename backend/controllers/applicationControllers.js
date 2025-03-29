@@ -114,6 +114,34 @@ export const withdrawApplication = TryCatch(async (req, res) => {
   res.status(200).json({ message: "Application withdrawn successfully" });
 });
 
+export const getAllJobApplications = TryCatch(async (req, res) => {
+  try {
+    const recruiterId = req.user._id;
+
+    const jobs = await JobPost.find({ company: recruiterId });
+
+    if (!jobs.length) {
+      return res.status(404).json({ message: "No job posts found for this recruiter" });
+    }
+
+    const jobIds = jobs.map((job) => job._id);
+
+    const applications = await Application.find({ job: { $in: jobIds } })
+      .populate("applicant", "name email phone")
+      .populate("job", "title description company")
+      .sort({ appliedAt: -1 });
+
+    if (!applications.length) {
+      return res.status(404).json({ message: "No applications found for the posted jobs" });
+    }
+
+    res.status(200).json(applications);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
 export const getJobApplications = TryCatch(async (req, res) => {
   const { jobId } = req.params;
   const recruiterId = req.user._id;
@@ -181,18 +209,6 @@ export const updateApplicationStatus = TryCatch(async (req, res) => {
   res.status(200).json({ message: "Application status updated successfully" });
 });
 
-export const deleteApplication = TryCatch(async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user._id;
-
-  const application = await Application.findOneAndDelete({ _id: id, applicant: userId });
-
-  if (!application) {
-    return res.status(404).json({ message: "Application not found or already deleted" });
-  }
-
-  res.status(200).json({ message: "Application deleted successfully" });
-});
 
 
 export const getApplicationsByStatus = TryCatch(async (req, res) => {
@@ -223,4 +239,18 @@ export const getApplicationsByStatus = TryCatch(async (req, res) => {
     }
 
     res.status(200).json(applications);
+});
+
+
+export const deleteApplication = TryCatch(async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  const application = await Application.findOneAndDelete({ _id: id, applicant: userId });
+
+  if (!application) {
+    return res.status(404).json({ message: "Application not found or already deleted" });
+  }
+
+  res.status(200).json({ message: "Application deleted successfully" });
 });

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
     User, Mail, Phone, Briefcase, GraduationCap,
     Link as LinkIcon, Calendar, Award, MapPin,
     Edit2, Trash2, Plus, ChevronDown, ChevronUp, Save, X
 } from 'lucide-react';
+
 
 const JobseekerProfile = () => {
     // State for profile data
@@ -51,60 +53,39 @@ const JobseekerProfile = () => {
     const experienceLevels = ["Fresher", "Junior", "Mid-level", "Senior", "Expert"];
 
     // Fetch profile data
-    useEffect(() => {
-        const fetchProfile = async () => {
-            setLoading(true);
-            try {
-                // Replace with actual API call
-                // const response = await fetch('/api/profile');
-                // const data = await response.json();
-
-                // Mock data for development
-                const mockData = {
-                    name: 'John Doe',
-                    mobile: '+1 (555) 123-4567',
-                    email: 'john.doe@example.com',
-                    skills: ['React', 'JavaScript', 'Node.js', 'MongoDB', 'Tailwind CSS'],
-                    experienceLevel: 'Mid-level',
-                    education: [
-                        {
-                            degree: 'Bachelor of Computer Science',
-                            institution: 'University of Technology',
-                            startDate: '2017-09-01',
-                            endDate: '2021-06-30',
-                            grade: '3.8 GPA'
-                        }
-                    ],
-                    portfolioURL: 'https://johndoe-portfolio.dev',
-                    experience: [
-                        {
-                            jobTitle: 'Frontend Developer',
-                            company: 'TechSolutions Inc.',
-                            location: 'San Francisco, CA',
-                            startDate: '2021-07-15',
-                            endDate: '',
-                            description: 'Developing and maintaining web applications using React.js and modern JavaScript libraries.'
-                        },
-                        {
-                            jobTitle: 'Web Development Intern',
-                            company: 'Digital Innovations',
-                            location: 'Remote',
-                            startDate: '2020-05-01',
-                            endDate: '2020-08-31',
-                            description: 'Assisted in developing responsive websites and implemented UI components.'
-                        }
-                    ]
-                };
-
-                setProfile(mockData);
-                setLoading(false);
-            } catch (err) {
-                console.error('Error fetching profile:', err);
-                setError('Failed to load profile data. Please try again later.');
-                setLoading(false);
+    const [name, setName] = useState("")
+    const fetchProfile = async () => {
+        console.log("Fetch profile function called")
+        setLoading(true);
+        try {
+          const response = await axios.get('/api/user/profile');
+          console.log("API Response:", response);
+          
+          if (response.data && response.data.profile) {
+            console.log("Profile data:", response.data.profile);
+            setProfile(response.data.profile);
+            if (response.data.profile.name) {
+              setName(response.data.profile.name);
             }
-        };
+          } else {
+            console.log("Unexpected response structure:", response.data);
+            setError('Unexpected data format received from server');
+          }
+          
+          setLoading(false);
+        } catch (err) {
+          console.error('Error fetching profile:', err);
+          setError('Failed to load profile data. Please try again later.');
+          setLoading(false);
+        }
+      };
+    
 
+    
+
+
+    useEffect(() => {
+        console.log("Use effect running")
         fetchProfile();
     }, []);
 
@@ -248,21 +229,27 @@ const JobseekerProfile = () => {
     const handleSaveProfile = async () => {
         try {
             setLoading(true);
-            // Replace with actual API call
-            // await fetch('/api/profile', {
-            //   method: 'PUT',
-            //   headers: {
-            //     'Content-Type': 'application/json'
-            //   },
-            //   body: JSON.stringify(profile)
-            // });
 
-            // Mock API call
-            console.log('Profile saved:', profile);
-            setTimeout(() => {
+            // Extract userId from auth or context if needed
+            // For now using the name field as userId based on your backend code
+            const userData = {
+                userId: profile.name, // This should be replaced with actual userId from auth
+                skills: profile.skills,
+                experienceLevel: profile.experienceLevel,
+                education: profile.education,
+                portfolioURL: profile.portfolioURL,
+                experience: profile.experience
+            };
+
+            const response = await axios.put('/api/user/profile/update', userData);
+
+            if (response.data.success) {
+                console.log('Profile updated successfully:', response.data.message,response.data.profile);
                 setLoading(false);
                 setEditMode(false);
-            }, 1000);
+            } else {
+                throw new Error(response.data.message || 'Failed to update profile');
+            }
         } catch (err) {
             console.error('Error saving profile:', err);
             setError('Failed to save profile. Please try again.');
@@ -272,7 +259,8 @@ const JobseekerProfile = () => {
 
     // Cancel edit mode
     const handleCancelEdit = () => {
-        // Could refetch profile data here
+        // Refetch profile data to discard changes
+        fetchProfile();
         setEditMode(false);
         setShowEducationForm(false);
         setShowExperienceForm(false);
@@ -518,7 +506,7 @@ const JobseekerProfile = () => {
 
                             {/* Skills list */}
                             <div className="mb-4">
-                                {profile.skills.length > 0 ? (
+                                {profile.skills && profile.skills.length > 0 ? (
                                     <div className="flex flex-wrap gap-2">
                                         {profile.skills.map((skill, index) => (
                                             <div
@@ -595,7 +583,7 @@ const JobseekerProfile = () => {
                             </div>
 
                             {/* Education list */}
-                            {profile.education.length > 0 ? (
+                            {profile.education && profile.education.length > 0 ? (
                                 <div className="space-y-4">
                                     {profile.education.map((edu, index) => (
                                         <div key={index} className="border border-slate-800 rounded-lg p-4 hover:bg-slate-800/50 transition-colors">
@@ -754,24 +742,24 @@ const JobseekerProfile = () => {
                             </div>
 
                             {/* Experience list */}
-                            {profile.experience.length > 0 ? (
+                            {profile.experience && profile.experience.length > 0 ? (
                                 <div className="space-y-4">
                                     {profile.experience.map((exp, index) => (
                                         <div key={index} className="border border-slate-800 rounded-lg p-4 hover:bg-slate-800/50 transition-colors">
                                             <div className="flex flex-col md:flex-row md:justify-between md:items-start">
-                                                <div>
+                                                <div className="flex-1">
                                                     <h3 className="text-lg font-medium text-white">{exp.jobTitle}</h3>
                                                     <p className="text-slate-400">{exp.company}</p>
-                                                    <div className="flex items-center mt-1 text-sm text-slate-500">
+                                                    <div className="flex items-center mt-2 text-sm text-slate-500">
                                                         <MapPin size={14} className="mr-1" />
-                                                        <span>{exp.location}</span>
+                                                        <span>{exp.location || 'Remote'}</span>
                                                     </div>
                                                     <div className="flex items-center mt-1 text-sm text-slate-500">
                                                         <Calendar size={14} className="mr-1" />
                                                         <span>{formatDate(exp.startDate)} - {formatDate(exp.endDate)}</span>
                                                     </div>
                                                     {exp.description && (
-                                                        <p className="text-slate-300 mt-2 text-sm">{exp.description}</p>
+                                                        <p className="mt-3 text-slate-300 text-sm">{exp.description}</p>
                                                     )}
                                                 </div>
 
@@ -815,7 +803,7 @@ const JobseekerProfile = () => {
                                                 value={experienceForm.jobTitle}
                                                 onChange={handleExperienceFormChange}
                                                 className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                placeholder="Software Engineer"
+                                                placeholder="Software Developer"
                                             />
                                         </div>
 
@@ -863,6 +851,7 @@ const JobseekerProfile = () => {
                                                     value={experienceForm.endDate}
                                                     onChange={handleExperienceFormChange}
                                                     className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    placeholder="Leave empty if current"
                                                 />
                                             </div>
                                         </div>
@@ -873,7 +862,7 @@ const JobseekerProfile = () => {
                                                 name="description"
                                                 value={experienceForm.description}
                                                 onChange={handleExperienceFormChange}
-                                                rows="3"
+                                                rows="4"
                                                 className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                 placeholder="Describe your responsibilities and achievements"
                                             ></textarea>
@@ -897,11 +886,10 @@ const JobseekerProfile = () => {
                                 </div>
                             )}
                         </div>
-                    )}
+                    )};
                 </div>
-            </div>
-        </div>
-    );
-};
-
-export default JobseekerProfile;
+            </div>    
+        </div>            
+    )
+};    
+export default JobseekerProfile ;

@@ -1,0 +1,42 @@
+const Navbar1 = () => {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b border-blue-900/30 bg-blue-600 backdrop-blur supports-[backdrop-filter]:bg-blue-900">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="relative h-8 w-8">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-blue-400"></div>
+              <div className="absolute inset-[2px] rounded-full bg-black flex items-center justify-center text-blue-400 font-bold">
+                N
+              </div>
+            </div>
+            <span className="text-xl font-bold text-white">NeXJob</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-6 mr-6">
+            <a href="#" className="text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors">
+              Home
+            </a>
+            <a href="#" className="text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors">
+              Features
+            </a>
+            <a href="#" className="text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors">
+              How It Works
+            </a>
+            <a href="#" className="text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors">
+              Jobs
+            </a>
+            <a href="#" className="text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors">
+              About
+            </a>
+          </nav>
+          {/* <div className="flex items-center gap-4">
+            <button className="px-4 py-2 text-sm border border-blue-800 text-blue-400 hover:bg-blue-900/20 rounded-md">
+              Log In
+            </button>
+            <button className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded-md">Sign Up</button>
+          </div> */}
+        </div>
+      </header>
+    )
+  }
+  
+  export default Navbar1

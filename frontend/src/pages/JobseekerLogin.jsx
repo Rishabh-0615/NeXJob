@@ -151,7 +151,7 @@ const { loginUser, btnLoading } = UserData();
           <div className="pt-4 text-center">
             <p className="text-sm text-neutral-400">
               Don't have an account?{' '}
-              <a href="/register" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+              <a href="/register-seeker" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
                 Sign up now
               </a>
             </p>

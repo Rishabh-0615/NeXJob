@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Building, Phone, Globe, MapPin, Briefcase, User, Upload, AlertCircle, ChevronRight } from 'lucide-react';
+import { Mail, Lock, Building, Phone, Globe, MapPin, Briefcase, User, AlertCircle, ChevronRight } from 'lucide-react';
 import { UserData } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Make sure to install axios
 
 const JobRecruiterRegister = () => {
   const [formData, setFormData] = useState({
@@ -13,12 +12,11 @@ const JobRecruiterRegister = () => {
     industry: '',
     location: '',
     password: '',
-    confirmPassword: '',
-    companyLogo: null
+    confirmPassword: ''
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const {registerRecruiter} = UserData();
+  const { registerRecruiter } = UserData();
   const navigate = useNavigate();
 
   const industries = [
@@ -44,19 +42,9 @@ const JobRecruiterRegister = () => {
     }));
   };
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        companyLogo: file
-      }));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError(null);
     
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
@@ -64,42 +52,24 @@ const JobRecruiterRegister = () => {
       return;
     }
     
+    if (!formData.companyName || !formData.email || !formData.password || 
+        !formData.phone || !formData.industry || !formData.location) {
+      setError("All fields are required except website.");
+      return;
+    }
+    
     setLoading(true);
     
-    // Prepare form data for API submission
-    const registrationData = new FormData();
-    registrationData.append('companyName', formData.companyName);
-    registrationData.append('email', formData.email);
-    registrationData.append('password', formData.password);
-    registrationData.append('phone', formData.phone);
-    registrationData.append('website', formData.website || '');
-    registrationData.append('industry', formData.industry);
-    registrationData.append('location', formData.location);
-    
-    // Append company logo if provided
-    if (formData.companyLogo) {
-      registrationData.append('companyLogo', formData.companyLogo);
-    }
-    
     try {
-      const response = await axios.post('/api/recruiter/register', registrationData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      
-
+      registerRecruiter(
+        formData.companyName, formData.email, formData.password, formData.phone, formData.website, formData.industry, formData.location,
+        navigate
+      );
     } catch (err) {
+      setError(err.response?.data?.message || "Registration failed. Please try again");
       setLoading(false);
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError('Registration failed. Please try again.');
-      }
-      console.error('Registration error:', err);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
@@ -263,30 +233,6 @@ const JobRecruiterRegister = () => {
               />
             </div>
           </div>
-
-          <div className="space-y-2">
-            <label htmlFor="companyLogo" className="block text-sm font-medium text-neutral-300">
-              Company Logo (Optional)
-            </label>
-            <div className="relative group">
-              <label className="flex items-center justify-center w-full py-3 px-3 bg-neutral-800 border border-neutral-700 border-dashed text-neutral-400 rounded-xl cursor-pointer hover:bg-neutral-750 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
-                <div className="flex items-center">
-                  <Upload size={18} className="mr-2 text-neutral-400" />
-                  <span className="text-sm">
-                    {formData.companyLogo ? formData.companyLogo.name : 'Upload logo image'}
-                  </span>
-                </div>
-                <input
-                  id="companyLogo"
-                  name="companyLogo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                  className="hidden"
-                />
-              </label>
-            </div>
-          </div>
           
           <div className="space-y-2">
             <label htmlFor="password" className="block text-sm font-medium text-neutral-300">
@@ -359,7 +305,7 @@ const JobRecruiterRegister = () => {
           <div className="pt-4 text-center">
             <p className="text-sm text-neutral-400">
               Already have a recruiter account?{' '}
-              <a href="/recruiter/login" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
+              <a href="/login-recruiter" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200">
                 Sign in
               </a>
             </p>

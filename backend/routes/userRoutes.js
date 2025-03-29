@@ -2,7 +2,7 @@ import express from 'express';
 import { forgetPassword, loginUser, logoutUser, myProfile, registerWithOtp, resetPassword, userProfile, verifyOtpAndRegister } from '../controllers/userControllers.js';
 import { isAuth } from '../middlewares/isAuth.js';
 import passport from '../controllers/passport.js';
-import { updateProfile } from '../controllers/seekerControllers.js';
+import { getProfile, updateProfile } from '../controllers/seekerControllers.js';
 
 const router = express.Router();
 router.post('/register',registerWithOtp);
@@ -27,6 +27,7 @@ router.get("/auth/google",
     }
   );
   router.put('/profile/update',isAuth,updateProfile);
+  router.get('/profile',isAuth,getProfile);
 
 
 export default router;

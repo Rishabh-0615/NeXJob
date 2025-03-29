@@ -8,7 +8,8 @@ import {
   getJobApplicationById,
   updateApplicationStatus,
   deleteApplication,
-  getApplicationsByStatus
+  getApplicationsByStatus,
+  getAllJobApplications
 } from "../controllers/applicationControllers.js";
 import { isAuth } from "../middlewares/isAuth.js";
 
@@ -21,6 +22,7 @@ router.delete("/withdraw/:id", isAuth, withdrawApplication);
 router.delete("/deleteapplications/:id", isAuth, deleteApplication);
 router.get("/jobapplicants/:jobId/", isAuth, getJobApplications);
 router.get("/jobapplicantsId/:id", isAuth, getJobApplicationById);
+router.get("/getAll", isAuth, getAllJobApplications);
 router.patch("/status/:id", isAuth, updateApplicationStatus);
 router.get("/getStatus/:status",isAuth,getApplicationsByStatus)
 

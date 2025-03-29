@@ -9,6 +9,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
+  const [isAuthRecruiter, setIsAuthRecruiter] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const [admin, setAdmin] = useState(null);
   const [isAuthAdmin, setIsAuthAdmin] = useState(false);
@@ -21,7 +22,7 @@ export const UserProvider = ({ children }) => {
       toast.success(data.message);
       setUser(data.user);
       setIsAuth(true);
-      navigate("/homeseeker");
+      navigate("/alljobs");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
@@ -34,8 +35,8 @@ export const UserProvider = ({ children }) => {
       const { data } = await axios.post("/api/recruiter/login", { email, password });
       toast.success(data.message);
       setUser(data.user);
-      setIsAuth(true);
-      navigate("/homerecruiter");
+      setIsAuthRecruiter(true);
+      navigate("/myjobs");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
@@ -59,15 +60,22 @@ export const UserProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
-  async function registerRecruiter(formdata,navigate) {
+  async function registerRecruiter(companyName, email, password, phone, website, industry, location,navigate) {
+    console.log( location)
     setBtnLoading(true);
     try {
       const { data } = await axios.post("/api/recruiter/register", {
-      
-        formdata
+      companyName,
+      password,
+      email,
+      phone,
+      website,
+      industry,
+      location,
+      navigate
       });
       toast.success(data.message);
-      navigate(`/verify/${data.token}`);
+      navigate(`/verifyRecruiter/${data.token}`);
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
     } finally {
@@ -88,7 +96,7 @@ export const UserProvider = ({ children }) => {
       setUser(data.user);
       setIsAuth(true);
       setBtnLoading(false);
-      navigate("/");
+      navigate("/alljobs");
     } catch (error) {
       toast.error(error.response?.data?.message);
       setBtnLoading(false);
@@ -112,19 +120,24 @@ export const UserProvider = ({ children }) => {
   async function verifyRecruiter(token, otp, navigate) {
     setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/recruiter/verify/" + token, {
-        otp,
-      });
+      const { data } = await axios.post(`/api/recruiter/verify/${token}`, { otp });
       toast.success(data.message);
-      setUser(data.user);
-      setIsAuth(true);
-      setBtnLoading(false);
+      
+      
+      setIsAuthRecruiter(false);
+  
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message);
+  
+      if (error.response?.data?.message === "Invalid or expired token") {
+        navigate("/register-recruiter"); 
+      }
+  
       setBtnLoading(false);
     }
   }
+  
 
   async function forgotRecruiter(email, navigate) {
     setBtnLoading(true);
@@ -187,7 +200,7 @@ export const UserProvider = ({ children }) => {
     try {
       const { data } = await axios.get("/api/recruiter/me");
       setUser(data);
-      setIsAuth(true);
+      setIsAuthRecruiter(true);
     } catch (error) {
       console.log("User fetch error:", error);
     } finally {
@@ -252,7 +265,9 @@ export const UserProvider = ({ children }) => {
         isAuthAdmin,
         verify,
         verifyRecruiter,
-        registerRecruiter
+        registerRecruiter,
+        isAuthRecruiter,
+        setIsAuthRecruiter,
       
       }}
     >

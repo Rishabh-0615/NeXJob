@@ -17,13 +17,9 @@ const TEMP_USERS = {};
 
 export const registerWithOtp = TryCatch(async (req, res) => {
   const { companyName, email, password, phone, website, industry, location } = req.body;
-  const file =req.file;
-  const fileUrl =getDataUrl(file)
-  const cloud =await cloudinary.v2.uploader.upload(fileUrl.content);
+ 
 
-  if (!companyName || !email || !password || !phone || !industry || !location) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+
 
   if (Array.isArray(email) || !validator.isEmail(email)) {
     return res.status(400).json({ message: "Invalid email format" });
@@ -45,10 +41,7 @@ export const registerWithOtp = TryCatch(async (req, res) => {
     industry,
     location,
     otp,
-    companyLogo:{
-      id:cloud.public_id,
-      url:cloud.secure_url,
-  },
+  
     expiresAt: Date.now() + 5 * 60 * 1000,
   };
 
@@ -93,21 +86,31 @@ export const verifyOtpAndRegisterRecruiter = TryCatch(async (req, res) => {
     const { email } = jwt.verify(token, process.env.JWT_SEC);
     const tempUser = TEMP_USERS[email];
 
+    // If no tempUser, return error
     if (!tempUser) {
       return res.status(400).json({ message: "No OTP request found for this email" });
     }
 
+    // If tempUser exists but has no password
+    if (!tempUser.password) {
+      return res.status(400).json({ message: "Password is missing. Please restart the registration process." });
+    }
+
+    // Check OTP Expiry
     if (tempUser.expiresAt < Date.now()) {
       delete TEMP_USERS[email];
       return res.status(400).json({ message: "OTP expired" });
     }
 
+    // Check if OTP is correct
     if (parseInt(tempUser.otp) !== parseInt(otp)) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
+    // ✅ Hash the password
     const hashPassword = await bcrypt.hash(tempUser.password, 10);
 
+    // ✅ Create Recruiter
     const recruiter = await JobRecruiter.create({
       companyName: tempUser.companyName,
       email,
@@ -116,19 +119,20 @@ export const verifyOtpAndRegisterRecruiter = TryCatch(async (req, res) => {
       website: tempUser.website,
       industry: tempUser.industry,
       location: tempUser.location,
-      companyLogo : tempUser.companyLogo,
     });
 
+    // Remove temp user from memory
     delete TEMP_USERS[email];
 
-    generateToken(recruiter, res);
+    
 
-    res.status(201).json({ recruiter, message: "Recruiter registered successfully" });
+    res.status(201).json({ recruiter, message: "Recruiter registered successfully wait for admin approval" });
   } catch (error) {
     console.error("Token verification failed:", error);
     return res.status(400).json({ message: "Invalid or expired token" });
   }
 });
+
 
 export const loginRecruiter = TryCatch(async (req, res) => {
   const { email, password } = req.body;
