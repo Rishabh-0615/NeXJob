@@ -8,60 +8,63 @@ import cloudinary from "cloudinary";
 import uploadFile from "../middlewares/multer.js";
 
 
+import uploadResume from "../middlewares/multer2.js";
+import uploadToCloudinary from "../utils/cloudinary.js";
+
 
 export const applyForJob = [
-    uploadFile, 
-    TryCatch(async (req, res) => {
-      const { jobId } = req.body;
-      const userId = req.user._id;
+  uploadResume,
+  TryCatch(async (req, res) => {
+    const { jobId } = req.body;
+    const userId = req.user?._id;
 
-      const job = await JobPost.findById(jobId);
-      if (!job) {
-        return res.status(404).json({ message: "Job post not found" });
-      }
-  
-    
-      const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
-      if (existingApplication) {
-        return res.status(400).json({ message: "You have already applied for this job" });
-      }
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized. Please log in." });
+    }
 
-      let resumeUrl = null;
-      let coverLetterUrl = null;
-  
-      if (req.files?.resume) {
-        const resumeDataUri = getDataUrl(req.files.resume[0]);
-        const uploadResponse = await cloudinary.uploader.upload(resumeDataUri.content, {
-          folder: "job-applications",
-          resource_type: "raw",
-        });
-        resumeUrl = uploadResponse.secure_url;
-      }
-  
-      if (req.files?.coverLetter) {
-        const coverLetterDataUri = getDataUrl(req.files.coverLetter[0]); 
-        const uploadResponse = await cloudinary.uploader.upload(coverLetterDataUri.content, {
-          folder: "job-applications",
-          resource_type: "raw",
-        });
-        coverLetterUrl = uploadResponse.secure_url;
-      }
-  
-      if (!resumeUrl) {
-        return res.status(400).json({ message: "Resume is required" });
-      }
-  
-    
-      const application = await Application.create({
-        job: jobId,
-        applicant: userId,
-        resume: resumeUrl,
-        coverLetter: coverLetterUrl,
-      });
-  
-      res.status(201).json({ application, message: "Job application submitted successfully" });
-    }),
-  ];
+    // Check if job post exists
+    const job = await JobPost.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: "Job post not found" });
+    }
+
+    // Check if user has already applied
+    const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
+    if (existingApplication) {
+      return res.status(400).json({ message: "You have already applied for this job" });
+    }
+
+    let resumeUrl = null;
+    let coverLetterUrl = null;
+
+    console.log("Received files:", req.files); // Debugging log
+
+    // Upload Resume to Cloudinary
+    if (req.files?.resume) {
+      resumeUrl = await uploadToCloudinary(req.files.resume[0].buffer, `resume_${userId}`);
+    }
+
+    // Upload Cover Letter to Cloudinary (Optional)
+    if (req.files?.coverLetter) {
+      coverLetterUrl = await uploadToCloudinary(req.files.coverLetter[0].buffer, `coverLetter_${userId}`);
+    }
+
+    if (!resumeUrl) {
+      return res.status(400).json({ message: "Resume is required" });
+    }
+
+    // Create Application Entry
+    const application = await Application.create({
+      job: jobId,
+      applicant: userId,
+      resume: resumeUrl,
+      coverLetter: coverLetterUrl,
+    });
+
+    res.status(201).json({ application, message: "Job application submitted successfully" });
+  }),
+];
+
 
 
 export const getApplications = TryCatch(async (req, res) => {
@@ -89,12 +92,13 @@ export const getApplicationById = TryCatch(async (req, res) => {
   if (!application) {
     return res.status(404).json({ message: "Application not found" });
   }
+  console.log(application.applicant.id,userId)
 
-  if (application.applicant.toString() !== userId.toString()) {
+  if (application.applicant.id.toString() !== userId.toString()) {
     return res.status(403).json({ message: "You are not authorized to view this application" });
   }
 
-  res.status(200).json(application);
+  res.status(200).json({application});
 });
 
 export const withdrawApplication = TryCatch(async (req, res) => {

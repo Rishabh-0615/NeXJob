@@ -16,29 +16,31 @@ import {
 } from "lucide-react";
 import {toast} from "react-toastify"
 
+
 const industries = [
-  "Technology & IT",
-  "Finance",
-  "Healthcare",
-  "Education",
-  "Manufacturing",
-  "Other",
-];
+    "Technology & IT",
+    "Finance",
+    "Healthcare",
+    "Education",
+    "Manufacturing",
+    "Other",
+  ];
+  
+  const jobTypes = [
+    "Full-Time",
+    "Part-Time",
+    "Contract",
+    "Freelance",
+    "Internship",
+  ];
+  
+  const hiringForOptions = ["Experienced", "Entry Level", "Fresher", "Any"];
+  
+  const locationTypes = ["Onsite", "Remote", "Hybrid"];
+  
 
-const jobTypes = [
-  "Full-Time",
-  "Part-Time",
-  "Contract",
-  "Freelance",
-  "Internship",
-];
-
-const hiringForOptions = ["Experienced", "Entry Level", "Fresher", "Any"];
-
-const locationTypes = ["Onsite", "Remote", "Hybrid"];
-
-const JobPosting = () => {
-  const [formData, setFormData] = useState({
+const JobForm = ({ initialData, onSubmit }) => {
+  const [formData, setFormData] = useState(initialData || {
     title: "",
     description: "",
     skills: [],
@@ -65,190 +67,140 @@ const JobPosting = () => {
     deadline: "",
     status: "Draft",
   });
-
-  const [skillInput, setSkillInput] = useState("");
-  const [activeSection, setActiveSection] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleNestedChange = (section, field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [section]: {
-        ...prevData[section],
-        [field]: value,
-      },
-    }));
-  };
-
-  const handleLocationChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      location: {
-        ...prevData.location,
-        [field]: value,
-      },
-    }));
-  };
-
-  const handleSalaryChange = (field, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      compensation: {
-        ...prevData.compensation,
-        salary: {
-          ...prevData.compensation.salary,
-          [field]: value,
-        },
-      },
-    }));
-  };
-
-  const toggleSection = (section) => {
-    setActiveSection(activeSection === section ? null : section);
-  };
-
-  const addSkill = () => {
-    if (skillInput.trim() && !formData.skills.includes(skillInput.trim())) {
+  
+    const [skillInput, setSkillInput] = useState("");
+    const [activeSection, setActiveSection] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+  
+    const handleChange = (e) => {
+      const { name, value } = e.target;
       setFormData((prevData) => ({
         ...prevData,
-        skills: [...prevData.skills, skillInput.trim()],
+        [name]: value,
       }));
-      setSkillInput("");
-    }
-  };
-
-  const removeSkill = (skillToRemove) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      skills: prevData.skills.filter((skill) => skill !== skillToRemove),
-    }));
-  };
-
-  const addEducation = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      eligibility: {
-        ...prevData.eligibility,
-        education: [
-          ...prevData.eligibility.education,
-          { degree: "", field: "", minPercentage: 0 },
-        ],
-      },
-    }));
-  };
-
-  const removeEducation = (indexToRemove) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      eligibility: {
-        ...prevData.eligibility,
-        education: prevData.eligibility.education.filter(
-          (_, index) => index !== indexToRemove
-        ),
-      },
-    }));
-  };
-
-  const handleEducationChange = (index, field, value) => {
-    const newEducation = [...formData.eligibility.education];
-    newEducation[index] = {
-      ...newEducation[index],
-      [field]: value,
     };
-
-    setFormData((prevData) => ({
-      ...prevData,
-      eligibility: {
-        ...prevData.eligibility,
-        education: newEducation,
-      },
-    }));
-  };
-  const [btnLoading, setBtnLoading] = useState(false)
-  const LoadingAnimation = () => (
-    <div className="flex justify-center items-center">
-      <div className="spinner border-t-transparent border-4 border-violet-500 rounded-full w-6 h-6 animate-spin"></div>
-    </div>
-  );
-
-  const handleSubmit = async (e, status) => {
-    setBtnLoading(true);
-    e.preventDefault();
-    setIsSubmitting(true);
   
-    const finalData = { ...formData, status };
+    const handleNestedChange = (section, field, value) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        [section]: {
+          ...prevData[section],
+          [field]: value,
+        },
+      }));
+    };
   
-    try {
-      const response = await axios.post("/api/jobPost/create", finalData, {
-        headers: { "Content-Type": "application/json" },
-      });
+    const handleLocationChange = (field, value) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        location: {
+          ...prevData.location,
+          [field]: value,
+        },
+      }));
+    };
   
-      if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message || "Job post created successfully!");
-        setBtnLoading(false);
-        setFormData({title: "",
-          description: "",
-          skills: [],
-          eligibility: {
-            hiringFor: "Experienced",
-            minExperience: 0,
-            maxExperience: null,
-            education: [{ degree: "", field: "", minPercentage: 0 }],
+    const handleSalaryChange = (field, value) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        compensation: {
+          ...prevData.compensation,
+          salary: {
+            ...prevData.compensation.salary,
+            [field]: value,
           },
-          compensation: {
-            salary: {
-              min: null,
-              max: null,
-            },
-            isNegotiable: false,
-          },
-          location: {
-            type: "Onsite",
-            city: "",
-            country: "",
-          },
-          industry: "Technology & IT",
-          jobType: "Full-Time",
-          deadline: "",
-          status: "Draft",})
-      } else {
-        throw new Error("Unexpected response status");
+        },
+      }));
+    };
+  
+    const toggleSection = (section) => {
+      setActiveSection(activeSection === section ? null : section);
+    };
+  
+    const addSkill = () => {
+      if (skillInput.trim() && !formData.skills.includes(skillInput.trim())) {
+        setFormData((prevData) => ({
+          ...prevData,
+          skills: [...prevData.skills, skillInput.trim()],
+        }));
+        setSkillInput("");
       }
-    } catch (error) {
-      console.error(
-        "Error creating job post:",
-        error.response?.data?.message || error.message
-      );
-      alert("Failed to create job post. Please try again.");
-      toast.error(error.response?.data?.message || "Something went wrong!");
-      setBtnLoading(false);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    };
   
+    const removeSkill = (skillToRemove) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        skills: prevData.skills.filter((skill) => skill !== skillToRemove),
+      }));
+    };
+  
+    const addEducation = () => {
+      setFormData((prevData) => ({
+        ...prevData,
+        eligibility: {
+          ...prevData.eligibility,
+          education: [
+            ...prevData.eligibility.education,
+            { degree: "", field: "", minPercentage: 0 },
+          ],
+        },
+      }));
+    };
+  
+    const removeEducation = (indexToRemove) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        eligibility: {
+          ...prevData.eligibility,
+          education: prevData.eligibility.education.filter(
+            (_, index) => index !== indexToRemove
+          ),
+        },
+      }));
+    };
+  
+    const handleEducationChange = (index, field, value) => {
+      const newEducation = [...formData.eligibility.education];
+      newEducation[index] = {
+        ...newEducation[index],
+        [field]: value,
+      };
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        eligibility: {
+          ...prevData.eligibility,
+          education: newEducation,
+        },
+      }));
+    };
+    const [btnLoading, setBtnLoading] = useState(false)
+    const LoadingAnimation = () => (
+      <div className="flex justify-center items-center">
+        <div className="spinner border-t-transparent border-4 border-violet-500 rounded-full w-6 h-6 animate-spin"></div>
+      </div>
+    );
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 bg-gradient-to-r from-blue-900 to-black p-6 rounded-lg shadow-lg transform hover:scale-101 transition-all duration-300">
           <h1 className="text-3xl font-bold text-blue-300 mb-2">
-            Create Job Posting
+            Update Job Posting
           </h1>
           <p className="text-gray-400">
-            Fill in the details below to create a new job posting for your
+            Update job posting for your
             company
           </p>
         </div>
 
-        <form onSubmit={(e) => handleSubmit(e, formData.status)}>
+        <form onSubmit={(e) => handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-gray-800 rounded-lg p-6 shadow-xl border border-blue-900 transition-all duration-300 hover:shadow-blue-900/20">
@@ -882,4 +834,4 @@ const JobPosting = () => {
   );
 };
 
-export default JobPosting;
+export default JobForm;

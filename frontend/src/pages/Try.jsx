@@ -14,7 +14,6 @@ import {
   Save,
   Send,
 } from "lucide-react";
-import {toast} from "react-toastify"
 
 const industries = [
   "Technology & IT",
@@ -172,69 +171,39 @@ const JobPosting = () => {
       },
     }));
   };
-  const [btnLoading, setBtnLoading] = useState(false)
-  const LoadingAnimation = () => (
-    <div className="flex justify-center items-center">
-      <div className="spinner border-t-transparent border-4 border-violet-500 rounded-full w-6 h-6 animate-spin"></div>
-    </div>
-  );
 
   const handleSubmit = async (e, status) => {
-    setBtnLoading(true);
     e.preventDefault();
     setIsSubmitting(true);
-  
-    const finalData = { ...formData, status };
-  
+
+    const finalData = {
+      ...formData,
+      status,
+    };
+
     try {
       const response = await axios.post("/api/jobPost/create", finalData, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-  
-      if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message || "Job post created successfully!");
-        setBtnLoading(false);
-        setFormData({title: "",
-          description: "",
-          skills: [],
-          eligibility: {
-            hiringFor: "Experienced",
-            minExperience: 0,
-            maxExperience: null,
-            education: [{ degree: "", field: "", minPercentage: 0 }],
-          },
-          compensation: {
-            salary: {
-              min: null,
-              max: null,
-            },
-            isNegotiable: false,
-          },
-          location: {
-            type: "Onsite",
-            city: "",
-            country: "",
-          },
-          industry: "Technology & IT",
-          jobType: "Full-Time",
-          deadline: "",
-          status: "Draft",})
-      } else {
-        throw new Error("Unexpected response status");
-      }
+
+      alert(
+        `Job posting ${
+          status === "Published" ? "published" : "saved as draft"
+        } successfully!`
+      );
     } catch (error) {
       console.error(
         "Error creating job post:",
-        error.response?.data?.message || error.message
+        error.response ? error.response.data : error.message
       );
       alert("Failed to create job post. Please try again.");
-      toast.error(error.response?.data?.message || "Something went wrong!");
-      setBtnLoading(false);
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <div className="container mx-auto px-4 py-8">
@@ -861,16 +830,22 @@ const JobPosting = () => {
                 </p>
 
                 <div className="space-y-3">
-                  
+                  <button
+                    type="button"
+                    onClick={(e) => handleSubmit(e, "Draft")}
+                    className="w-full bg-gray-700 hover:bg-gray-600 text-gray-300 py-3 px-6 rounded-md transition-all duration-300 font-medium flex items-center justify-center gap-2 border border-blue-900 hover:shadow-md hover:shadow-blue-900/20"
+                  >
+                    <Save size={18} className="text-blue-400" />
+                    Save as Draft
+                  </button>
 
                   <button
                     type="button"
-                    disabled={btnLoading}
                     onClick={(e) => handleSubmit(e, "Published")}
                     className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 px-6 rounded-md transition-all duration-300 font-medium flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/20 transform hover:-translate-y-1"
                   >
                     <Send size={18} />
-                    {btnLoading ? <LoadingAnimation /> : "Post The Job"}
+                    Publish Job Now
                   </button>
                 </div>
               </div>
