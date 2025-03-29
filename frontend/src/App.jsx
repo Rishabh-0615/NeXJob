@@ -29,6 +29,7 @@ import LandingPage from "./pages/Home";
 import JobseekerProfile from "./pages/JobseekerProfile";
 import VerifyR from "./pages/VerifyR";
 import JobApplicationDetailsPage from "./pages/JobApplicationDetailsPage";
+import Applicants from "./pages/Applicants";
 
 // General Pages
 
@@ -85,6 +86,7 @@ const App = () => {
         <Route path="/post" element={isAuthRecruiter ? <JobPosting /> : <LandingPage />} />
         <Route path="/myjobs" element={isAuthRecruiter ? <MyJobs /> : <LandingPage />} />
         <Route path="/edit/:id" element={isAuthRecruiter ? <EditJob /> : <LandingPage />} />
+        <Route path="/applicants/:jobId" element={isAuthRecruiter ? <Applicants /> : <LandingPage />} />
       </Routes>
     </BrowserRouter>
   );

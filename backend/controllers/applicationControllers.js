@@ -6,11 +6,12 @@ import TryCatch from "../utils/TryCatch.js";
 import getDataUrl from "../utils/urlGenerator.js"; 
 import cloudinary from "cloudinary";
 import uploadFile from "../middlewares/multer.js";
-
+import axios from 'axios'
 
 import uploadResume from "../middlewares/multer2.js";
 import uploadToCloudinary from "../utils/cloudinary.js";
 
+const ATS_API_KEY = "Q9J56bQdnqNOXSK4uSG6nv2AOBQgePo4";
 
 export const applyForJob = [
   uploadResume,
@@ -36,12 +37,15 @@ export const applyForJob = [
 
     let resumeUrl = null;
     let coverLetterUrl = null;
+    let atsScore = 0; // Default ATS score
 
     console.log("Received files:", req.files); // Debugging log
 
     // Upload Resume to Cloudinary
     if (req.files?.resume) {
       resumeUrl = await uploadToCloudinary(req.files.resume[0].buffer, `resume_${userId}`);
+    } else {
+      return res.status(400).json({ message: "Resume is required" });
     }
 
     // Upload Cover Letter to Cloudinary (Optional)
@@ -49,8 +53,23 @@ export const applyForJob = [
       coverLetterUrl = await uploadToCloudinary(req.files.coverLetter[0].buffer, `coverLetter_${userId}`);
     }
 
-    if (!resumeUrl) {
-      return res.status(400).json({ message: "Resume is required" });
+    // 🟢 Try getting ATS Score (without failing the application)
+    try {
+      const atsResponse = await axios.post(
+        "https://ats-score-checker-api.com/calculate",
+        {
+          jobTitle: job.title,
+          jobDescription: job.description,
+          skillsRequired: job.skills,
+          resume: resumeUrl,
+        },
+        {
+          headers: { Authorization: `Bearer ${ATS_API_KEY}` },
+        }
+      );
+      atsScore = atsResponse.data.score || 0;
+    } catch (error) {
+      console.warn("ATS API failed:", error.message); // Logs error but continues execution
     }
 
     // Create Application Entry
@@ -59,12 +78,12 @@ export const applyForJob = [
       applicant: userId,
       resume: resumeUrl,
       coverLetter: coverLetterUrl,
+      atsScore,
     });
 
     res.status(201).json({ application, message: "Job application submitted successfully" });
   }),
 ];
-
 
 
 export const getApplications = TryCatch(async (req, res) => {
@@ -152,21 +171,17 @@ export const getJobApplications = TryCatch(async (req, res) => {
   }
 
   const recruiter = await JobRecruiter.findById(recruiterId);
-  if (!recruiter || job.company.toString() !== recruiterId.toString()) {
-    return res.status(403).json({ message: "You are not authorized to view applications for this job" });
-  }
+
 
   const applications = await Application.find({ job: jobId })
     .populate("applicant", "name email phone")
     .populate("job", "title description company")
+    
     .sort({ appliedAt: -1 });
-
-  if (!applications.length) {
-    return res.status(404).json({ message: "No applications found for this job" });
-  }
 
   res.status(200).json(applications);
 });
+
 
 export const getJobApplicationById = TryCatch(async (req, res) => {
   const { id } = req.params;

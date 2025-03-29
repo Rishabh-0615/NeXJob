@@ -6,6 +6,7 @@ const applicationSchema = new mongoose.Schema(
     applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     resume: { type: String, required: true },
     coverLetter: { type: String },
+    atsScore: { type: Number, default: null }, // Store ATS score
     status: { 
       type: String, 
       enum: ["Applied", "Shortlisted", "Interview", "Hired", "Rejected"], 
