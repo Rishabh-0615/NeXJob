@@ -1,0 +1,196 @@
+.chatbot-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  .chatbot-container h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .instruction {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .chatbot-container input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+  }
+  
+  .chatbot-container input:focus {
+    border-color: #4a6cf7;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.1);
+  }
+  
+  .chatbot-container button {
+    background-color: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 20px;
+    transition: background-color 0.2s;
+    font-weight: 600;
+  }
+  
+  .chatbot-container button:hover:not(:disabled) {
+    background-color: #3a5bd9;
+  }
+  
+  .chatbot-container button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(231, 76, 60, 0.1);
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  
+  .roadmap-output {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .roadmap-output h3 {
+    color: #4a6cf7;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 12px;
+    margin-top: 0;
+    font-size: 24px;
+  }
+  
+  .roadmap-step {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .roadmap-step:last-child {
+    border-bottom: none;
+  }
+  
+  .roadmap-step h4 {
+    color: #2c3e50;
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 20px;
+  }
+  
+  .step-description {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #555;
+    line-height: 1.5;
+  }
+  
+  .substeps-list {
+    list-style-type: none;
+    padding-left: 5px;
+    margin-top: 12px;
+  }
+  
+  .substeps-list li {
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 20px;
+    line-height: 1.5;
+  }
+  
+  .substeps-list li:before {
+    content: "•";
+    color: #4a6cf7;
+    position: absolute;
+    left: 0;
+    font-size: 18px;
+    top: -2px;
+  }
+  
+  .substeps-list li strong {
+    color: #2c3e50;
+  }
+  
+  .resources h4 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+    font-size: 20px;
+  }
+  
+  .resources-list {
+    list-style-type: none;
+    padding-left: 5px;
+  }
+  
+  .resources-list li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+    line-height: 1.5;
+  }
+  
+  .resources-list li:before {
+    content: "•";
+    color: #4a6cf7;
+    position: absolute;
+    left: 0;
+    font-size: 18px;
+    top: -2px;
+  }
+  
+  .resources-list a {
+    color: #4a6cf7;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .resources-list a:hover {
+    color: #3a5bd9;
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 600px) {
+    .chatbot-container {
+      padding: 15px;
+    }
+    
+    .roadmap-output {
+      padding: 15px;
+    }
+  }

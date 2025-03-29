@@ -29,6 +29,11 @@ import LandingPage from "./pages/Home";
 import JobseekerProfile from "./pages/JobseekerProfile";
 import VerifyR from "./pages/VerifyR";
 import JobApplicationDetailsPage from "./pages/JobApplicationDetailsPage";
+import InterviewRoom from "./components/InterviewRoom";
+import ScheduleInterview from "./components/RecruiterScheduleInterview.jsx";
+import SeekerChatbot from "./components/SeekerChatbot.jsx";
+import RecruiterScheduleInterview from "./components/RecruiterScheduleInterview.jsx";
+
 
 // General Pages
 
@@ -141,7 +146,14 @@ const App = () => {
           path="/edit/:id"
           element={isAuthRecruiter ? <EditJob /> : <LandingPage />}
         />
+          <Route path="/interview/:interviewId" element={<InterviewRoom />} />
+            <Route path="/schedule-interview" element={<ScheduleInterview />} />
+
+            <Route path='/chatbot' element={<SeekerChatbot/>}></Route>
+            <Route path='/meet' element={<RecruiterScheduleInterview/>}></Route>
       </Routes>
+
+    
     </BrowserRouter>
   );
 };
