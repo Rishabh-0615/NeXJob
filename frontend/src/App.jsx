@@ -14,6 +14,14 @@ import VerifyRecruiter from "./pages/VerifyRecruiter";
 import ForgotRecruiter from "./pages/ForgotRecruiter";
 import ResetRecruiter from "./pages/resetRecruiter";
 import HomeRecruiter from "./pages/HomeRecruiter";
+import JobPosting from "./pages/JobPosting";
+import AllJobs from "./pages/AllJobs";
+import MyJobs from "./pages/MyJobs";
+import EditJob from "./pages/EditJob";
+import JobPostDetailPage from "./pages/JobPostDetailPage";
+import MyApplicationsPage from "./pages/MyApplicationsPage";
+import ApplicationDetailPage from "./pages/ApplicationDetailPage ";
+
 
 const App = () => {
   const { loading, isAuth, user } = UserData(); 
@@ -39,6 +47,15 @@ const App = () => {
             <Route path='/resetRecruiter/:token' element={<ResetRecruiter />} />
             <Route path='/admin-login' element={<AdminLogin />} />
             <Route path='/admin' element={<VerifyRecruiter />} />
+            <Route path='/post' element={<JobPosting />} />
+            <Route path='/alljobs' element={<AllJobs />} />
+            <Route path='/jobpost/:id' element={<JobPostDetailPage />} />
+            <Route path='/myjobs' element={<MyJobs />} />
+            <Route path="/edit/:id" element={<EditJob />} />
+            <Route path="/myapplication" element={<MyApplicationsPage />} />
+            <Route path="/application/:id" element={<ApplicationDetailPage />} />
+            
+
 
           </Routes>
         </BrowserRouter>

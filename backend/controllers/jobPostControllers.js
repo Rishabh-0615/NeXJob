@@ -56,6 +56,20 @@ export const getJobPostById = TryCatch(async (req, res) => {
 
     res.status(200).json(jobPost);
 });
+export const getMyPosts =TryCatch(async(req,res)=>{
+    const id = req.user._id;
+    
+    if(!id)
+        return res.status(400).json({
+            message:"Please Login"
+    })
+
+    const posts =await JobPost.find({company :id});
+    res.status(200).json({
+        posts,
+    })
+
+})
 export const updateJobPost = TryCatch(async (req, res) => {
     const { id } = req.params;
     const recruiterId = req.user._id;
