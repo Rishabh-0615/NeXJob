@@ -32,7 +32,6 @@ import JobApplicationDetailsPage from "./pages/JobApplicationDetailsPage";
 
 // General Pages
 
-
 const App = () => {
   const { loading, isAuth, isAuthRecruiter, isAuthAdmin } = UserData();
   console.log(isAuth, isAuthRecruiter, isAuthAdmin);
@@ -43,7 +42,7 @@ const App = () => {
     <BrowserRouter>
       {/* Dynamic Navbar */}
       {isAuth && <Navbar />}
-     
+
       {!isAuth && !isAuthRecruiter && !isAuthAdmin && <Empty />}
 
       <Routes>
@@ -51,15 +50,39 @@ const App = () => {
         <Route
           path="/"
           element={
-            isAuthAdmin ? <VerifyRecruiter /> : isAuth ? <AllJobs /> : isAuthRecruiter ? <MyJobs /> : <LandingPage />
+            isAuthAdmin ? (
+              <VerifyRecruiter />
+            ) : isAuth ? (
+              <AllJobs />
+            ) : isAuthRecruiter ? (
+              <MyJobs />
+            ) : (
+              <LandingPage />
+            )
           }
         />
 
         {/* Authentication Routes */}
-        <Route path="/register-seeker" element={isAuth || isAuthRecruiter ? <AllJobs /> : <JobseekerRegister />} />
-        <Route path="/register-recruiter" element={isAuth || isAuthRecruiter ? <AllJobs /> : <JobRecruiterRegister />} />
-        <Route path="/login-seeker" element={isAuth ? <AllJobs /> : <JobSeekerLogin />} />
-        <Route path="/login-recruiter" element={isAuthRecruiter ? <MyJobs /> : <JobRecruiterLogin />} />
+        <Route
+          path="/register-seeker"
+          element={
+            isAuth || isAuthRecruiter ? <AllJobs /> : <JobseekerRegister />
+          }
+        />
+        <Route
+          path="/register-recruiter"
+          element={
+            isAuth || isAuthRecruiter ? <AllJobs /> : <JobRecruiterRegister />
+          }
+        />
+        <Route
+          path="/login-seeker"
+          element={isAuth ? <AllJobs /> : <JobSeekerLogin />}
+        />
+        <Route
+          path="/login-recruiter"
+          element={isAuthRecruiter ? <MyJobs /> : <JobRecruiterLogin />}
+        />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<VerifyRecruiter />} />
 
@@ -72,19 +95,52 @@ const App = () => {
         <Route path="/resetRecruiter/:token" element={<ResetRecruiter />} />
 
         {/* Job Seeker Routes */}
-        <Route path="/alljobs" element={isAuth ? <AllJobs /> : <LandingPage />} />
-        <Route path="/jobpost/:id" element={isAuth ? <JobPostDetailPage /> : <LandingPage />} />
-        <Route path="/myapplication" element={isAuth ? <MyApplicationsPage /> : <LandingPage />} />
-        <Route path="/seeker" element={isAuth ? <JobseekerProfile /> : <LandingPage />} />
-        <Route path="/allapplication" element={isAuth ? <JobApplicationsPage /> : <LandingPage />} />
-        <Route path="/allapplication/:id" element={isAuth ? <JobApplicationDetailsPage /> : <LandingPage />} />
-        <Route path="/application/:id" element={isAuth ? <ApplicationDetailPage /> : <LandingPage />} />
+        <Route
+          path="/alljobs"
+          element={isAuth ? <AllJobs /> : <LandingPage />}
+        />
+        <Route
+          path="/jobpost/:id"
+          element={isAuth ? <JobPostDetailPage /> : <LandingPage />}
+        />
+        <Route
+          path="/myapplication"
+          element={isAuth ? <MyApplicationsPage /> : <LandingPage />}
+        />
+        <Route
+          path="/seeker"
+          element={isAuth ? <JobseekerProfile /> : <LandingPage />}
+        />
+        <Route
+          path="/allapplication"
+          element={isAuth ? <JobApplicationsPage /> : <LandingPage />}
+        />
+        <Route
+          path="/allapplication/:id"
+          element={isAuth ? <JobApplicationDetailsPage /> : <LandingPage />}
+        />
+        <Route
+          path="/application/:id"
+          element={isAuth ? <ApplicationDetailPage /> : <LandingPage />}
+        />
 
         {/* Recruiter Routes */}
-        <Route path="/homerecruiter" element={isAuthRecruiter ? <HomeRecruiter /> : <LandingPage />} />
-        <Route path="/post" element={isAuthRecruiter ? <JobPosting /> : <LandingPage />} />
-        <Route path="/myjobs" element={isAuthRecruiter ? <MyJobs /> : <LandingPage />} />
-        <Route path="/edit/:id" element={isAuthRecruiter ? <EditJob /> : <LandingPage />} />
+        <Route
+          path="/homerecruiter"
+          element={isAuthRecruiter ? <HomeRecruiter /> : <LandingPage />}
+        />
+        <Route
+          path="/post"
+          element={isAuthRecruiter ? <JobPosting /> : <LandingPage />}
+        />
+        <Route
+          path="/myjobs"
+          element={isAuthRecruiter ? <MyJobs /> : <LandingPage />}
+        />
+        <Route
+          path="/edit/:id"
+          element={isAuthRecruiter ? <EditJob /> : <LandingPage />}
+        />
       </Routes>
     </BrowserRouter>
   );
