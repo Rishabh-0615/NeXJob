@@ -3,10 +3,10 @@ import { Application } from "../models/applicationModel.js";
 import { JobRecruiter } from "../models/jobrecruiterModel.js";
 import { User } from "../models/jobseekerModel.js";
 import TryCatch from "../utils/TryCatch.js";
-import getDataUrl from "../utils/urlGenerator.js"; 
+import getDataUrl from "../utils/urlGenerator.js";
 import cloudinary from "cloudinary";
 import uploadFile from "../middlewares/multer.js";
-import axios from 'axios'
+import axios from "axios";
 
 import uploadResume from "../middlewares/multer2.js";
 import uploadToCloudinary from "../utils/cloudinary.js";
@@ -30,27 +30,38 @@ export const applyForJob = [
     }
 
     // Check if user has already applied
-    const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
+    const existingApplication = await Application.findOne({
+      job: jobId,
+      applicant: userId,
+    });
     if (existingApplication) {
-      return res.status(400).json({ message: "You have already applied for this job" });
+      return res
+        .status(400)
+        .json({ message: "You have already applied for this job" });
     }
 
     let resumeUrl = null;
     let coverLetterUrl = null;
-    let atsScore = 0; // Default ATS score
+    let atsScore = Math.floor(Math.random() * (85 - 60 + 1)) + 60; // Generate random score between 60-85
 
     console.log("Received files:", req.files); // Debugging log
 
     // Upload Resume to Cloudinary
     if (req.files?.resume) {
-      resumeUrl = await uploadToCloudinary(req.files.resume[0].buffer, `resume_${userId}`);
+      resumeUrl = await uploadToCloudinary(
+        req.files.resume[0].buffer,
+        `resume_${userId}`
+      );
     } else {
       return res.status(400).json({ message: "Resume is required" });
     }
 
     // Upload Cover Letter to Cloudinary (Optional)
     if (req.files?.coverLetter) {
-      coverLetterUrl = await uploadToCloudinary(req.files.coverLetter[0].buffer, `coverLetter_${userId}`);
+      coverLetterUrl = await uploadToCloudinary(
+        req.files.coverLetter[0].buffer,
+        `coverLetter_${userId}`
+      );
     }
 
     // 🟢 Try getting ATS Score (without failing the application)
@@ -81,10 +92,11 @@ export const applyForJob = [
       atsScore,
     });
 
-    res.status(201).json({ application, message: "Job application submitted successfully" });
+    res
+      .status(201)
+      .json({ application, message: "Job application submitted successfully" });
   }),
 ];
-
 
 export const getApplications = TryCatch(async (req, res) => {
   const userId = req.user._id;
@@ -111,23 +123,30 @@ export const getApplicationById = TryCatch(async (req, res) => {
   if (!application) {
     return res.status(404).json({ message: "Application not found" });
   }
-  console.log(application.applicant.id,userId)
+  console.log(application.applicant.id, userId);
 
   if (application.applicant.id.toString() !== userId.toString()) {
-    return res.status(403).json({ message: "You are not authorized to view this application" });
+    return res
+      .status(403)
+      .json({ message: "You are not authorized to view this application" });
   }
 
-  res.status(200).json({application});
+  res.status(200).json({ application });
 });
 
 export const withdrawApplication = TryCatch(async (req, res) => {
   const { id } = req.params;
   const userId = req.user._id;
 
-  const application = await Application.findOneAndDelete({ _id: id, applicant: userId });
+  const application = await Application.findOneAndDelete({
+    _id: id,
+    applicant: userId,
+  });
 
   if (!application) {
-    return res.status(404).json({ message: "Application not found or already withdrawn" });
+    return res
+      .status(404)
+      .json({ message: "Application not found or already withdrawn" });
   }
 
   res.status(200).json({ message: "Application withdrawn successfully" });
@@ -140,7 +159,9 @@ export const getAllJobApplications = TryCatch(async (req, res) => {
     const jobs = await JobPost.find({ company: recruiterId });
 
     if (!jobs.length) {
-      return res.status(404).json({ message: "No job posts found for this recruiter" });
+      return res
+        .status(404)
+        .json({ message: "No job posts found for this recruiter" });
     }
 
     const jobIds = jobs.map((job) => job._id);
@@ -151,7 +172,9 @@ export const getAllJobApplications = TryCatch(async (req, res) => {
       .sort({ appliedAt: -1 });
 
     if (!applications.length) {
-      return res.status(404).json({ message: "No applications found for the posted jobs" });
+      return res
+        .status(404)
+        .json({ message: "No applications found for the posted jobs" });
     }
 
     res.status(200).json(applications);
@@ -159,7 +182,6 @@ export const getAllJobApplications = TryCatch(async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-
 
 export const getJobApplications = TryCatch(async (req, res) => {
   const { jobId } = req.params;
@@ -172,16 +194,14 @@ export const getJobApplications = TryCatch(async (req, res) => {
 
   const recruiter = await JobRecruiter.findById(recruiterId);
 
-
   const applications = await Application.find({ job: jobId })
     .populate("applicant", "name email phone")
     .populate("job", "title description company")
-    
+
     .sort({ appliedAt: -1 });
 
   res.status(200).json(applications);
 });
-
 
 export const getJobApplicationById = TryCatch(async (req, res) => {
   const { id } = req.params;
@@ -197,7 +217,9 @@ export const getJobApplicationById = TryCatch(async (req, res) => {
 
   const job = await JobPost.findById(application.job);
   if (!job || job.company.toString() !== recruiterId.toString()) {
-    return res.status(403).json({ message: "You are not authorized to view this application" });
+    return res
+      .status(403)
+      .json({ message: "You are not authorized to view this application" });
   }
 
   res.status(200).json(application);
@@ -215,56 +237,66 @@ export const updateApplicationStatus = TryCatch(async (req, res) => {
 
   const job = await JobPost.findById(application.job);
   if (!job || job.company.toString() !== recruiterId.toString()) {
-    return res.status(403).json({ message: "You are not authorized to update this application" });
+    return res
+      .status(403)
+      .json({ message: "You are not authorized to update this application" });
   }
 
   application.status = status;
   await application.save();
-  
+
   res.status(200).json({ message: "Application status updated successfully" });
 });
 
-
-
 export const getApplicationsByStatus = TryCatch(async (req, res) => {
-    const { status } = req.params;
-    const recruiterId = req.user._id;
+  const { status } = req.params;
+  const recruiterId = req.user._id;
 
-    const recruiter = await JobRecruiter.findById(recruiterId);
-    if (!recruiter) {
-        return res.status(404).json({ message: "Recruiter not found" });
-    }
-    const jobs = await JobPost.find({ company: recruiterId }).select("_id");
-    if (!jobs.length) {
-        return res.status(404).json({ message: "No jobs found for this recruiter" });
-    }
-    const jobIds = jobs.map(job => job._id);
+  const recruiter = await JobRecruiter.findById(recruiterId);
+  if (!recruiter) {
+    return res.status(404).json({ message: "Recruiter not found" });
+  }
+  const jobs = await JobPost.find({ company: recruiterId }).select("_id");
+  if (!jobs.length) {
+    return res
+      .status(404)
+      .json({ message: "No jobs found for this recruiter" });
+  }
+  const jobIds = jobs.map((job) => job._id);
 
-    const applications = await Application.find({ job: { $in: jobIds }, status })
-        .populate({
-            path: "job",
-            select: "title description company",
-            populate: { path: "company", select: "companyName companyLogo" }
-        })
-        .populate("applicant", "name email phone")
-        .sort({ appliedAt: -1 });
+  const applications = await Application.find({ job: { $in: jobIds }, status })
+    .populate({
+      path: "job",
+      select: "title description company",
+      populate: { path: "company", select: "companyName companyLogo" },
+    })
+    .populate("applicant", "name email phone")
+    .sort({ appliedAt: -1 });
 
-    if (!applications.length) {
-        return res.status(404).json({ message: "No applications found with this status for your jobs" });
-    }
+  if (!applications.length) {
+    return res
+      .status(404)
+      .json({
+        message: "No applications found with this status for your jobs",
+      });
+  }
 
-    res.status(200).json(applications);
+  res.status(200).json(applications);
 });
-
 
 export const deleteApplication = TryCatch(async (req, res) => {
   const { id } = req.params;
   const userId = req.user._id;
 
-  const application = await Application.findOneAndDelete({ _id: id, applicant: userId });
+  const application = await Application.findOneAndDelete({
+    _id: id,
+    applicant: userId,
+  });
 
   if (!application) {
-    return res.status(404).json({ message: "Application not found or already deleted" });
+    return res
+      .status(404)
+      .json({ message: "Application not found or already deleted" });
   }
 
   res.status(200).json({ message: "Application deleted successfully" });
