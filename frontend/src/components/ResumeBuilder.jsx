@@ -20,6 +20,7 @@ import {
   FileText,
   Edit2,
   ArrowLeft,
+  LinkIcon,
 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -245,6 +246,42 @@ const ResumeBuilder = ({ onBack }) => {
   const handleDownload = () => {
     // TODO: Implement PDF generation
     toast.info("PDF download feature coming soon!");
+  };
+
+  // Add delete handlers for each section
+  const deleteEducation = (index) => {
+    const newEducation = resume.education.filter((_, i) => i !== index);
+    setResume((prev) => ({ ...prev, education: newEducation }));
+  };
+
+  const deleteExperience = (index) => {
+    const newExperience = resume.experience.filter((_, i) => i !== index);
+    setResume((prev) => ({ ...prev, experience: newExperience }));
+  };
+
+  const deleteSkill = (categoryIndex, itemIndex) => {
+    const newSkills = [...resume.skills];
+    newSkills[categoryIndex].items = newSkills[categoryIndex].items.filter(
+      (_, i) => i !== itemIndex
+    );
+    setResume((prev) => ({ ...prev, skills: newSkills }));
+  };
+
+  const deleteProject = (index) => {
+    const newProjects = resume.projects.filter((_, i) => i !== index);
+    setResume((prev) => ({ ...prev, projects: newProjects }));
+  };
+
+  const deleteCertification = (index) => {
+    const newCertifications = resume.certifications.filter(
+      (_, i) => i !== index
+    );
+    setResume((prev) => ({ ...prev, certifications: newCertifications }));
+  };
+
+  const deleteLanguage = (index) => {
+    const newLanguages = resume.languages.filter((_, i) => i !== index);
+    setResume((prev) => ({ ...prev, languages: newLanguages }));
   };
 
   if (loading) {
@@ -495,11 +532,17 @@ const ResumeBuilder = ({ onBack }) => {
                     {resume.education.map((edu, index) => (
                       <motion.div
                         key={index}
-                        className="border rounded-lg p-4 space-y-4"
+                        className="border rounded-lg p-4 space-y-4 relative"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
+                        <button
+                          onClick={() => deleteEducation(index)}
+                          className="absolute top-2 right-2 text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                         <div className="grid grid-cols-2 gap-4">
                           <motion.div whileHover={{ scale: 1.02 }}>
                             <label className="block text-sm font-medium text-gray-300">
@@ -635,11 +678,17 @@ const ResumeBuilder = ({ onBack }) => {
                     {resume.experience.map((exp, index) => (
                       <motion.div
                         key={index}
-                        className="border rounded-lg p-4 space-y-4"
+                        className="border rounded-lg p-4 space-y-4 relative"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
+                        <button
+                          onClick={() => deleteExperience(index)}
+                          className="absolute top-2 right-2 text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                         <div className="grid grid-cols-2 gap-4">
                           <motion.div whileHover={{ scale: 1.02 }}>
                             <label className="block text-sm font-medium text-gray-300">
@@ -790,6 +839,7 @@ const ResumeBuilder = ({ onBack }) => {
                           {skillCategory.items.map((skill, itemIndex) => (
                             <motion.div
                               key={itemIndex}
+                              className="relative"
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{
@@ -797,6 +847,14 @@ const ResumeBuilder = ({ onBack }) => {
                                 delay: itemIndex * 0.1,
                               }}
                             >
+                              <button
+                                onClick={() =>
+                                  deleteSkill(categoryIndex, itemIndex)
+                                }
+                                className="absolute -top-2 -right-2 text-red-400 hover:text-red-300 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
                               <input
                                 type="text"
                                 value={skill}
@@ -842,11 +900,17 @@ const ResumeBuilder = ({ onBack }) => {
                     {resume.projects.map((project, index) => (
                       <motion.div
                         key={index}
-                        className="border rounded-lg p-4 space-y-4"
+                        className="border rounded-lg p-4 space-y-4 relative"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
+                        <button
+                          onClick={() => deleteProject(index)}
+                          className="absolute top-2 right-2 text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                         <div className="grid grid-cols-2 gap-4">
                           <motion.div whileHover={{ scale: 1.02 }}>
                             <label className="block text-sm font-medium text-gray-300">
@@ -980,11 +1044,17 @@ const ResumeBuilder = ({ onBack }) => {
                     {resume.certifications.map((cert, index) => (
                       <motion.div
                         key={index}
-                        className="border rounded-lg p-4 space-y-4"
+                        className="border rounded-lg p-4 space-y-4 relative"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
+                        <button
+                          onClick={() => deleteCertification(index)}
+                          className="absolute top-2 right-2 text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                         <div className="grid grid-cols-2 gap-4">
                           <motion.div whileHover={{ scale: 1.02 }}>
                             <label className="block text-sm font-medium text-gray-300">
@@ -1104,11 +1174,17 @@ const ResumeBuilder = ({ onBack }) => {
                     {resume.languages.map((lang, index) => (
                       <motion.div
                         key={index}
-                        className="border rounded-lg p-4 space-y-4"
+                        className="border rounded-lg p-4 space-y-4 relative"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
+                        <button
+                          onClick={() => deleteLanguage(index)}
+                          className="absolute top-2 right-2 text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                         <div className="grid grid-cols-2 gap-4">
                           <motion.div whileHover={{ scale: 1.02 }}>
                             <label className="block text-sm font-medium text-gray-300">
@@ -1283,6 +1359,115 @@ const ResumeBuilder = ({ onBack }) => {
                       </div>
                     </motion.div>
                   ))}
+                </div>
+              )}
+
+              {resume.projects.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-blue-400">
+                    <FileText size={24} />
+                    Projects
+                  </h2>
+                  {resume.projects.map((project, index) => (
+                    <motion.div
+                      key={index}
+                      className="mb-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                      <h3 className="text-xl font-medium text-gray-300">
+                        {project.name}
+                      </h3>
+                      <p className="text-gray-500">
+                        {project.technologies.join(", ")}
+                      </p>
+                      <p className="text-gray-400">
+                        {project.startDate} - {project.endDate}
+                      </p>
+                      <p className="text-gray-300 mt-2">
+                        {project.description}
+                      </p>
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 text-sm mt-1 inline-flex items-center"
+                        >
+                          <LinkIcon size={14} className="mr-1" />
+                          View Project
+                        </a>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {resume.certifications.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-blue-400">
+                    <Award size={24} />
+                    Certifications
+                  </h2>
+                  {resume.certifications.map((cert, index) => (
+                    <motion.div
+                      key={index}
+                      className="mb-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                      <h3 className="text-xl font-medium text-gray-300">
+                        {cert.name}
+                      </h3>
+                      <p className="text-gray-500">
+                        {cert.issuer}
+                        {cert.credentialId && ` • ID: ${cert.credentialId}`}
+                      </p>
+                      <p className="text-gray-400">
+                        {new Date(cert.date).toLocaleDateString("en-US", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                      {cert.link && (
+                        <a
+                          href={cert.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300 text-sm mt-1 inline-flex items-center"
+                        >
+                          <LinkIcon size={14} className="mr-1" />
+                          View Certificate
+                        </a>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {resume.languages.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-blue-400">
+                    <Globe size={24} />
+                    Languages
+                  </h2>
+                  <div className="flex flex-wrap gap-4">
+                    {resume.languages.map((lang, index) => (
+                      <motion.div
+                        key={index}
+                        className="bg-blue-800/50 text-blue-300 px-4 py-2 rounded-lg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                      >
+                        <span className="font-medium">{lang.name}</span>
+                        <span className="text-blue-400 ml-2">•</span>
+                        <span className="ml-2">{lang.proficiency}</span>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
