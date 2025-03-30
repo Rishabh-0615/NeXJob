@@ -32,7 +32,7 @@ import JobApplicationDetailsPage from "./pages/JobApplicationDetailsPage";
 import InterviewRoom from "./components/InterviewRoom";
 import ScheduleInterview from "./components/RecruiterScheduleInterview.jsx";
 import SeekerChatbot from "./components/SeekerChatbot.jsx";
-import RecruiterInterviewDashboard from "./components/RecruiterScheduleInterview.jsx";
+import RecruiterScheduleInterview from "./components/RecruiterScheduleInterview.jsx";
 
 import Applicants from "./pages/Applicants";
 
@@ -147,19 +147,12 @@ const App = () => {
           path="/edit/:id"
           element={isAuthRecruiter ? <EditJob /> : <LandingPage />}
         />
-          <Route path="/interview/:interviewId" element={<InterviewRoom />} />
-            <Route path="/schedule-interview" element={<ScheduleInterview />} />
+        <Route path="/interview/:interviewId" element={<InterviewRoom />} />
+        <Route path="/schedule-interview" element={<ScheduleInterview />} />
 
-            <Route path='/chatbot' element={<SeekerChatbot/>}></Route>
-            <Route path='/meet' element={<RecruiterInterviewDashboard/>}></Route>
-        <Route path="/homerecruiter" element={isAuthRecruiter ? <HomeRecruiter /> : <LandingPage />} />
-        <Route path="/post" element={isAuthRecruiter ? <JobPosting /> : <LandingPage />} />
-        <Route path="/myjobs" element={isAuthRecruiter ? <MyJobs /> : <LandingPage />} />
-        <Route path="/edit/:id" element={isAuthRecruiter ? <EditJob /> : <LandingPage />} />
-        <Route path="/applicants/:jobId" element={isAuthRecruiter ? <Applicants /> : <LandingPage />} />
+        <Route path="/chatbot" element={<SeekerChatbot />}></Route>
+        <Route path="/meet" element={<RecruiterScheduleInterview />}></Route>
       </Routes>
-
-    
     </BrowserRouter>
   );
 };

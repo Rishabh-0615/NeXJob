@@ -1,3 +1,32 @@
+# Ignore environment variables
 .env
-/node_modules
-**/.vscode
+*.env
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore IDE/editor-specific files
+**/.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore compiled and log files
+*.log
+*.sqlite3
+instance/
+
+# Ignore dependencies (if installed locally)
+/node_modules/
+
+# Ignore Flask session & debug files
+*.pid
+*.db
+.DS_Store
