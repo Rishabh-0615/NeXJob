@@ -87,6 +87,21 @@ io.on("connection", (socket) => {
     console.log(`🔵 Code update in room ${interviewId}`);
     socket.to(interviewId).emit("code-update", code);
   });
+  
+  socket.on("language-change", ({ interviewId, language }) => {
+    console.log(`🟣 Language change in room ${interviewId} to ${language}`);
+    socket.to(interviewId).emit("language-change", language);
+  });
+  
+  socket.on("notes-update", ({ interviewId, notes }) => {
+    console.log(`📝 Notes update in room ${interviewId}`);
+    socket.to(interviewId).emit("notes-update", notes);
+  });
+  
+  socket.on("chat-message", ({ interviewId, message, sender }) => {
+    console.log(`💬 Chat message in room ${interviewId} from ${sender}`);
+    io.to(interviewId).emit("chat-message", { message, sender, timestamp: new Date() });
+  });
 
   socket.on("disconnect", () => {
     console.log("🔴 Client disconnected:", socket.id);

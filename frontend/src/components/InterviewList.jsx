@@ -7,7 +7,7 @@ const InterviewList = () => {
   useEffect(() => {
     const fetchInterviews = async () => {
       try {
-        const response = await axios.get(`/api/application/getstatus/${Interview}`);
+        const response = await axios.get(`/api/application/getstatus/${Shortlisted}`);
         setInterviews(response.data);
       } catch (error) {
         console.error("Error fetching interviews", error);
