@@ -41,18 +41,28 @@ const JobApplicationDetailsPage = () => {
       console.error("updateStatus function is undefined!");
       return;
     }
-  
+
+    if (!application?._id) {
+      console.error("Error: Application ID is missing!");
+      return;
+    }
+
+    console.log(`Updating application ID ${application._id} to status ${newStatus}`);
+
     const result = await updateStatus(application._id, newStatus);
     
     if (result.success) {
+      console.log("Status updated successfully:", newStatus);
       setApplication(prev => prev ? { ...prev, status: newStatus } : prev);
       setShowModal(false);
     } else {
+      console.error(`Failed to update status: ${result.error}`);
       alert(`Failed to update status: ${result.error}`);
     }
-  };
+};
+
   
-  const getStatusBadgeClass = (status) => {
+const getStatusBadgeClass = (status) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-semibold";
     const statusClasses = {
       "Applied": "bg-indigo-900/20 text-indigo-400 border border-indigo-800/50",
@@ -61,21 +71,9 @@ const JobApplicationDetailsPage = () => {
       "Hired": "bg-green-900/20 text-green-400 border border-green-800/50",
       "Rejected": "bg-red-900/20 text-red-400 border border-red-800/50"
     };
-    
-    return `${baseClasses} ${statusClasses[status] || "bg-neutral-900/20 text-neutral-400 border border-neutral-800/50"}`;
-  };
 
-  if (loading) return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-60">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 transform -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500 rounded-full filter blur-3xl opacity-20 transform translate-x-1/2 translate-y-1/2"></div>
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-indigo-600 rounded-full filter blur-3xl opacity-20 transform -translate-x-1/2 -translate-y-1/2"></div>
-      </div>
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
-    </div>
-  );
+    return `${baseClasses} ${statusClasses[status] || "bg-neutral-900/20 text-neutral-400 border border-neutral-800/50"}`;
+};
 
   if (error) return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
@@ -193,11 +191,12 @@ const JobApplicationDetailsPage = () => {
 
       {showModal && (
         <StatusUpdateModal
-          applicationId={application._id}
-          currentStatus={application.status}
-          onUpdate={handleStatusUpdate}
-          onClose={() => setShowModal(false)}
-        />
+        applicationId={application._id}
+        currentStatus={application.status}
+        onStatusChange={handleStatusUpdate} // Ensure correct prop name
+        onClose={() => setShowModal(false)}
+      />
+      
       )}
     </div>
   );
