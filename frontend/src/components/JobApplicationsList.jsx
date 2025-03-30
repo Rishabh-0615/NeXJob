@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 import React from "react";
 import { User, Briefcase, Calendar, Clock } from 'lucide-react';
-=======
 import React, { useState } from "react";
 import axios from "axios";
->>>>>>> 013b38058c04e8f0ff5ee23bd65ade74004c8452
 
 const JobApplicationsList = ({ applications, onRowClick }) => {
   const [schedulingId, setSchedulingId] = useState(null);
@@ -110,16 +107,10 @@ const JobApplicationsList = ({ applications, onRowClick }) => {
         </thead>
         <tbody className="divide-y divide-neutral-700">
           {applications.map((app) => (
-<<<<<<< HEAD
             <tr
               key={app._id}
               onClick={() => onRowClick(app._id)}
               className="hover:bg-neutral-800/70 cursor-pointer transition-colors duration-150"
-=======
-            <tr 
-              key={app._id} 
-              className="hover:bg-gray-50 cursor-pointer"
->>>>>>> 013b38058c04e8f0ff5ee23bd65ade74004c8452
             >
               <td className="px-6 py-4 whitespace-nowrap" onClick={() => onRowClick(app._id)}>
                 <div className="flex items-center">
@@ -136,7 +127,6 @@ const JobApplicationsList = ({ applications, onRowClick }) => {
                   </div>
                 </div>
               </td>
-<<<<<<< HEAD
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-start">
                   <Briefcase size={16} className="text-neutral-500 mr-2 mt-0.5" />
@@ -157,18 +147,6 @@ const JobApplicationsList = ({ applications, onRowClick }) => {
                       {formatTime(app.appliedAt)}
                     </div>
                   </div>
-=======
-              <td className="px-6 py-4 whitespace-nowrap" onClick={() => onRowClick(app._id)}>
-                <div className="text-sm text-gray-900">{app.job?.title || "Unknown Job"}</div>
-                <div className="text-xs text-gray-500">{app.job?.company?.name || "Unknown Company"}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap" onClick={() => onRowClick(app._id)}>
-                <div className="text-sm text-gray-900">
-                  {new Date(app.appliedAt).toLocaleDateString()}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {new Date(app.appliedAt).toLocaleTimeString()}
->>>>>>> 013b38058c04e8f0ff5ee23bd65ade74004c8452
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap" onClick={() => onRowClick(app._id)}>
