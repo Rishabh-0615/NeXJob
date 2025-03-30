@@ -16,7 +16,6 @@ import {
 
 import { Link } from "react-router-dom";
 
-
 // Main App Component
 const LandingPage = () => {
   return (
@@ -34,7 +33,6 @@ const LandingPage = () => {
 };
 
 // Navbar Component
-
 
 const Navbar = () => {
   return (
@@ -65,9 +63,6 @@ const Navbar = () => {
     </header>
   );
 };
-
-
-
 
 // Hero Section
 const HeroSection = () => {
@@ -162,7 +157,7 @@ const FeaturesSection = () => {
           />
           <FeatureCard
             icon={<Shield className="h-10 w-10" />}
-            title="Verified Recruiters & Fraud Prevention 🛡️"
+            title="Verified Recruiters & Fraud Prevention 🛡"
             description="All recruiters are verified to ensure legitimate job postings and protect your information."
           />
           <FeatureCard
@@ -177,8 +172,8 @@ const FeaturesSection = () => {
           />
           <FeatureCard
             icon={<TrendingUp className="h-10 w-10" />}
-            title="Integrated Career Growth Tools 📈"
-            description="Access tools and resources to help you grow your skills and advance your career."
+            title="Integrated Career Roadmap 📈"
+            description="Access tools and resources to help you grow your skills and advance your career with Roadmap."
           />
         </div>
       </div>
@@ -247,7 +242,7 @@ const HowItWorksSection = () => {
                 <div className="relative">
                   <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 flex items-center justify-center border border-blue-900/50">
                     <img
-                      src="https://via.placeholder.com/600x400"
+                      src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8am9iJTIwc2Vla2VyfGVufDB8fDB8fHww"
                       alt="Job seeker process"
                       className="object-cover opacity-80"
                     />
@@ -282,7 +277,7 @@ const HowItWorksSection = () => {
                 <div className="relative">
                   <div className="aspect-video rounded-lg overflow-hidden bg-gray-900 flex items-center justify-center border border-blue-900/50">
                     <img
-                      src="https://via.placeholder.com/600x400"
+                      src="https://plus.unsplash.com/premium_photo-1676666379051-383ed1b005e8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8am9iJTIwcmVjcnVpdGVyfGVufDB8fDB8fHww"
                       alt="Recruiter process"
                       className="object-cover opacity-80"
                     />
@@ -368,7 +363,7 @@ const AIInActionSection = () => {
               <Shield className="h-10 w-10 mx-auto" />
             </div>
             <h3 className="text-xl font-bold mb-2 text-white">
-              Bias Elimination
+              UnBias Elimination
             </h3>
             <p className="text-gray-400">
               Our algorithms are designed to eliminate unconscious bias in the
@@ -599,7 +594,6 @@ const TestimonialCard = ({ name, role, company, image, rating, quote }) => (
   </div>
 );
 
-
 // CTA Section
 const CTASection = () => {
   return (
@@ -614,12 +608,16 @@ const CTASection = () => {
           candidate, NeXJob has you covered.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <button className="px-6 py-3 bg-white text-blue-700 hover:bg-blue-50 border border-blue-300 rounded-md glow-border">
-            Sign Up as Job Seeker
-          </button>
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white border border-blue-500 rounded-md glow-border">
-            Sign Up as Recruiter
-          </button>
+          <Link to="login-seeker">
+            <button className="px-6 py-3 bg-white text-blue-700 hover:bg-blue-50 border border-blue-300 rounded-md glow-border">
+              Sign Up as Job Seeker
+            </button>
+          </Link>
+          <Link to="/login-recruiter">
+            <button className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white border border-blue-500 rounded-md glow-border">
+              Sign Up as Recruiter
+            </button>
+          </Link>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-8 text-blue-100">
           <a

@@ -43,7 +43,7 @@ const MyJobs = () => {
   };
 
   const handleViewApplicants = (id) => {
-    navigate(`/applicants/${id}`);
+    navigate(`/allapplication`);
   };
 
   return (
