@@ -24,7 +24,7 @@ const SeekerChatbot = () => {
       console.log("🟢 Sending Request to AI:", { careerGoal, currentSkills });
 
       const response = await axios.post(
-        "http://localhost:5174/api/chatbot/roadmap",
+        "http://localhost:5173/api/chatbot/roadmap",
         { careerGoal, currentSkills },
         { withCredentials: true }
       );
