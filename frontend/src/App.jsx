@@ -33,6 +33,8 @@ import InterviewRoom from "./components/InterviewRoom";
 import ScheduleInterview from "./components/RecruiterScheduleInterview.jsx";
 import SeekerChatbot from "./components/SeekerChatbot.jsx";
 import RecruiterScheduleInterview from "./components/RecruiterScheduleInterview.jsx";
+import JobTrendsChart from "./components/JobsTrendsChart.jsx";
+import JobMarketDashboard from "./components/Market.jsx";
 
 
 // General Pages
@@ -151,6 +153,11 @@ const App = () => {
 
             <Route path='/chatbot' element={<SeekerChatbot/>}></Route>
             <Route path='/meet' element={<RecruiterScheduleInterview/>}></Route>
+            <Route path='/chatbot' element={<SeekerChatbot/>}></Route>
+            <Route path='/chart' element={<JobTrendsChart/>}></Route>
+            <Route path='/stats' element={<JobMarketDashboard/>}></Route>
+
+
       </Routes>
 
     
